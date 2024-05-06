@@ -66,9 +66,9 @@ export class RoleForm extends Component<{
                 value={{this.lastName}}
                 {{on 'input' this.setLastName}}
               /></div><div class='col-12 col-md-2'><div class='d-grid'><button
-                  class='btn btn-secondary'
+                  class='btn'
+                  class={{if this.isFormInvalid 'btn-secondary' 'btn-primary'}}
                   type='button'
-                  disabled={{this.isFormInvalid}}
                   {{on 'click' this.onAdd}}
                 >{{t.add}}</button></div></div></div></div></div>
 
