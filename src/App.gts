@@ -126,10 +126,7 @@ export default class App extends Component {
       fileName: this.fileName,
       lastModified: this.fileLastModified,
       fileSize: this.fileSize,
-      workCharacter: this.users[0].role,
-      fullName: this.users[0].lastName,
-      signature: '',
-      signingDate: '',
+      users: this.users,
     }).then((link) => {
       console.log('link', link);
       this.fileLink = link;

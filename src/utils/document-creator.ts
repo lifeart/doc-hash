@@ -1,4 +1,4 @@
-import { t } from './constants';
+import { t, type User } from './constants';
 
 type AssuranceSheetData = {
   documentDesignation: string;
@@ -10,10 +10,7 @@ type AssuranceSheetData = {
   fileName: string;
   lastModified: string;
   fileSize: string;
-  workCharacter: string;
-  fullName: string;
-  signature: string;
-  signingDate: string;
+  users: User[];
 };
 
 export async function createAssuranceSheet(data: AssuranceSheetData) {
@@ -99,12 +96,14 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
           t.signature,
           t.signing_date,
         ),
-        createContentRow(
-          '',
-          data.workCharacter,
-          data.fullName,
-          data.signature,
-          data.signingDate,
+        ...data.users.map((user, index) =>
+          createContentRow(
+            (index + 1).toString(),
+            user.role,
+            user.lastName,
+            '',
+            '',
+          ),
         ),
       ],
       width: {
