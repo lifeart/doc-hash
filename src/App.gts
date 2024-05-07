@@ -12,7 +12,7 @@ import {
   type User,
   getHash,
   t,
-  DocumentField,
+  type DocumentField,
 } from './utils/constants';
 import { createAssuranceSheet } from './utils/document-creator';
 
