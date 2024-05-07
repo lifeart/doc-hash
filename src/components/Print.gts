@@ -1,15 +1,17 @@
 import { Component } from '@lifeart/gxt';
 import { style } from './../utils/print-style';
-import { t } from './../utils/constants';
+import { t, not } from './../utils/constants';
 
 export class Print extends Component {
   <template>
     <style>{{style}}</style>
-    <div class='header'>
-      <button class='header__button'>
-        {{t.print}}
-      </button>
-    </div>
+    {{#if (not @hidePrintButton)}}
+      <div class='header'>
+        <button class='header__button'>
+          {{t.print}}
+        </button>
+      </div>
+    {{/if}}
 
     <div class='container'>
       <h1>{{t.assurance_sheet}}</h1>

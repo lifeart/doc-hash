@@ -90,6 +90,8 @@ export const t = {
   print: 'Печать',
   // Скачать ИУЛ
   download_assurance_sheet: 'Скачать ИУЛ',
+  // Передпросмотр
+  preview: 'Передпросмотр',
 };
 
 export async function getHash(file: File, algorithm: AlgorithmType) {

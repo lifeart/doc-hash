@@ -77,14 +77,16 @@ export default class App extends Component {
     );
   }
   get fileName() {
-    return this.file?.name;
+    return this.file?.name ?? '';
   }
   get fileSize() {
-    return this.file?.size;
+    return this.file?.size ?? '';
   }
   get fileLastModified() {
     return this.file?.lastModified
-      ? new Date(this.file.lastModified).toLocaleString()
+      ? new Date(this.file.lastModified).toLocaleString('ru-RU', {
+          timeZone: 'Europe/Moscow',
+        })
       : '';
   }
   onPrint = () => {
@@ -180,15 +182,27 @@ export default class App extends Component {
             @onRemove={{this.onRemoveUser}}
             @onAdd={{this.onAddUser}}
           />
-          <div class='mt-3 mb-3 d-grid'><button
-              class='btn btn-lg'
-              class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
-            >Создать
-            </button>
 
-            <button
+          <h1>{{t.preview}}</h1>
+          <div class='container' shadowrootmode='open'>
+            <Print
+              @last_change_number={{this.last_change_number}}
+              @version={{this.version}}
+              @document_name={{this.document_name}}
+              @designation={{this.designation}}
+              @fileHash={{this.fileHash}}
+              @selectedAlgo={{this.selectedAlgo}}
+              @fileName={{this.fileName}}
+              @fileSize={{this.fileSize}}
+              @fileLastModified={{this.fileLastModified}}
+              @users={{this.users}}
+              @hidePrintButton={{true}}
+            />
+          </div>
+          <div class='mt-3 mb-3 d-grid'><button
+              class='btn btn-lg mb-3'
+              class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
               type='button'
-              clas='btn btn-lg btn-secondary mt-2'
               target='_blank'
               rel='noreferrer'
               {{on 'click' this.onPrint}}
