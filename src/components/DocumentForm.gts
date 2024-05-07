@@ -1,5 +1,5 @@
 import { Component } from '@lifeart/gxt';
-import { t } from './../utils/constants';
+import { t, not } from './../utils/constants';
 
 export class DocumentForm extends Component<{
   Args: {
@@ -28,6 +28,7 @@ export class DocumentForm extends Component<{
           class='form-control'
           id='formOboz'
           value={{@designation}}
+          class={{if (not @designation.length) 'border-danger' ''}}
           {{on 'input' (fn this.onChange 'designation')}}
         />
       </div>
@@ -38,6 +39,7 @@ export class DocumentForm extends Component<{
           class='form-control'
           id='formNaim'
           value={{@document_name}}
+          class={{if (not @document_name.length) 'border-danger' ''}}
           rows='3'
           {{on 'input' (fn this.onChange 'document_name')}}
         ></textarea>
@@ -51,6 +53,7 @@ export class DocumentForm extends Component<{
             class='form-control'
             id='formVer'
             value={{@version}}
+            class={{if (not @version) 'border-danger' ''}}
             {{on 'input' (fn this.onChange 'version')}}
           />
         </div>
@@ -63,6 +66,7 @@ export class DocumentForm extends Component<{
           <input
             type='number'
             class='form-control'
+            class={{if (not @last_change_number) 'border-danger' ''}}
             id='formNum'
             value={{@last_change_number}}
             {{on 'input' (fn this.onChange 'last_change_number')}}

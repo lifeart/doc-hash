@@ -60,6 +60,9 @@ export default class App extends Component {
       }
     })
   }
+  get isFormInvalid() {
+    return !this.designation || !this.document_name || !this.file || !this.fileHash || !this.users.length || !this.version || !this.last_change_number || !this.selectedAlgo;
+  }
   <template>
     <div class='container py-2' {{this.hashEffect}}>
       <div class='row justify-content-center'><div
@@ -82,10 +85,19 @@ export default class App extends Component {
           <FileForm
             @onFileSelect={{this.onFileSelect}}
           >
-            <Algorithms
-              @selected={{this.selectedAlgo}}
-              @onSelect={{this.selectAlgo}}
-            />
+          <div class="container">
+            <div class="row">
+              <div class="col-4">
+                <Algorithms
+                  @selected={{this.selectedAlgo}}
+                  @onSelect={{this.selectAlgo}}
+                />
+              </div>
+              <div class="col-8">
+                <pre class="pt-2 font-weight-bold">{{this.fileHash}}</pre>
+              </div>
+            </div>
+            </div>
           </FileForm>
 
           <RoleForm
@@ -94,8 +106,8 @@ export default class App extends Component {
             @onAdd={{this.onAddUser}}
           />
           <div class='mt-3 mb-3 d-grid'><button
-              disabled=''
-              class='btn btn-lg btn-success'
+              class='btn btn-lg'
+              class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
             >Создать
             </button></div></div></div></div>
   </template>

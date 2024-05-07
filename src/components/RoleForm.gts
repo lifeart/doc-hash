@@ -1,5 +1,6 @@
 import { Component, tracked } from '@lifeart/gxt';
-import { roles, t, type User } from './../utils/constants';
+import { roles, t, type User, not } from './../utils/constants';
+
 
 export class RoleForm extends Component<{
   Args: {
@@ -27,7 +28,9 @@ export class RoleForm extends Component<{
   <template>
     <div class='bg-warning bg-opacity-10 pt-3 pb-3 px-4'>
       <h3 class='py-2'>3. {{t.project_roles}}</h3>
-      <div class='mb-3'>{{t.specify_role_and_surname}}</div>
+      {{#if (not @users.length)}}
+        <div class='alert alert-warning mt-4'>{{t.specify_role_and_surname}}</div>
+      {{/if}}
 
       {{! ROLE LIST }}
       <ul class='list-group mb-3'>
@@ -52,6 +55,7 @@ export class RoleForm extends Component<{
                 type='text'
                 placeholder={{t.role}}
                 class='form-control'
+                class={{if (not this.role.length) 'border-danger' ''}}
                 list='roles_list'
                 value={{this.role}}
                 {{on 'input' this.setRole}}
@@ -62,6 +66,7 @@ export class RoleForm extends Component<{
               </datalist></div><div class='col-12 col-md-5'><input
                 type='text'
                 placeholder={{t.surname}}
+                class={{if (not this.lastName.length) 'border-danger' ''}}
                 class='form-control'
                 value={{this.lastName}}
                 {{on 'input' this.setLastName}}
