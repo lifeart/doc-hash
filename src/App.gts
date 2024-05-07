@@ -26,6 +26,8 @@ export default class App extends Component {
   last_change_number: number = 1;
   @tracked
   fileHash: string = '';
+  @tracked
+  fileLink: string = '';
   onDocumentFieldChange = (field: string, value: string | number) => {
     this[field] = value;
   };
@@ -154,6 +156,10 @@ export default class App extends Component {
                 >
                 Печать
                 </button>
+
+                <a href={{this.fileLink}} class="btn btn-lg btn-dark" download>
+                Скачать ИУЛ
+              </a>
             </div></div></div></div>
   </template>
 }
