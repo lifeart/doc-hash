@@ -19,7 +19,7 @@ export class DocumentForm extends Component<{
   };
 
   <template>
-    {{!-- refactor it to use tailwind instead of bootstrap --}}
+    {{! refactor it to use tailwind instead of bootstrap }}
     <div class='bg-warning bg-opacity-10 pt-3 pb-4 px-4'>
       <h3 class='py-2'>1. {{t.document}}</h3>
       <div>

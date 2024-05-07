@@ -86,7 +86,10 @@ export const t = {
   serial_number: '№ п/п',
   // Конструктор информационно-удостоверяющих листов для экспертизы. [GXT]
   title: 'Конструктор информационно-удостоверяющих листов для экспертизы. [GXT]',
-
+  // Печать
+  print: 'Печать',
+  // Скачать ИУЛ
+  download_assurance_sheet: 'Скачать ИУЛ',
 };
 
 export async function getHash(file: File, algorithm: AlgorithmType) {

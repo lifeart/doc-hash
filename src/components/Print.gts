@@ -7,7 +7,7 @@ export class Print extends Component {
     <style>{{style}}</style>
     <div class='header'>
       <button class='header__button'>
-        Печать
+        {{t.print}}
       </button>
     </div>
 
@@ -17,13 +17,10 @@ export class Print extends Component {
       <table>
         <tr>
           <td class='text-center font-bold'>
-            №<br />
-            п/п
+            {{t.serial_number}}
           </td>
           <td width='23.7%' class='text-center font-bold'>
-            Обозначение
-            <br />
-            документа
+            {{t.document_designation}}
           </td>
           <td width='39.55%' class='text-center font-bold' colspan='3'>
             {{t.product_name}}

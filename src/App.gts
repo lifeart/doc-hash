@@ -196,11 +196,11 @@ export default class App extends Component {
               rel='noreferrer'
               {{on 'click' this.onPrint}}
             >
-              Печать
+              {{t.print}}
             </button>
 
             <a href={{this.fileLink}} class='btn btn-lg btn-dark' download>
-              Скачать ИУЛ
+              {{t.download_assurance_sheet}}
             </a>
           </div></div></div></div>
   </template>
