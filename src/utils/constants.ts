@@ -1,4 +1,4 @@
-import { createMD5, createSHA1, createCRC32 } from 'hash-wasm';
+import type { createMD5 as createMD5Type } from 'hash-wasm';
 
 export enum AlgorithmType {
   MD5 = 'md5',
@@ -8,7 +8,7 @@ export enum AlgorithmType {
 
 export const HashFunctions: Record<
   AlgorithmType,
-  null | Awaited<ReturnType<typeof createMD5>>
+  null | Awaited<ReturnType<typeof createMD5Type>>
 > = {
   [AlgorithmType.MD5]: null,
   [AlgorithmType.SHA1]: null,
@@ -62,6 +62,31 @@ export const t = {
   checksum_calculation_algorithm: 'Алгоритм расчета контрольной суммы',
   // Файл
   file: 'Файл',
+  // Информационно-удостоверяющий лист
+  assurance_sheet: 'Информационно-удостоверяющий лист',
+  // Наименование файла
+  file_name: 'Наименование файла',
+  // Дата и время последнего изменения файла
+  last_modified: 'Дата и время последнего изменения файла',
+  // Размер файла, байт
+  file_size: 'Размер файла, байт',
+  // Характер работы
+  work_type: 'Характер работы',
+  // ФИО
+  full_name: 'ФИО',
+  // Подпись
+  signature: 'Подпись',
+  // Дата подписания
+  signing_date: 'Дата подписания',
+  // Наименование изделия, наименование документа
+  product_name: 'Наименование изделия, наименование документа',
+  // Обозначение документа
+  document_designation: 'Обозначение документа',
+  // № п/п
+  serial_number: '№ п/п',
+  // Конструктор информационно-удостоверяющих листов для экспертизы. [GXT]
+  title: 'Конструктор информационно-удостоверяющих листов для экспертизы. [GXT]',
+
 };
 
 export async function getHash(file: File, algorithm: AlgorithmType) {

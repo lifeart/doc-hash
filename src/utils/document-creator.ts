@@ -1,9 +1,12 @@
+import { t } from './constants';
+
 type AssuranceSheetData = {
   documentDesignation: string;
   productName: string;
   version: string;
   lastChangeNumber: string;
-  sha1: string;
+  hashFunction: string;
+  hashValue: string;
   fileName: string;
   lastModified: string;
   fileSize: string;
@@ -44,7 +47,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       {
         children: [
           new Paragraph({
-            text: 'Информационно-удостоверяющий лист',
+            text: t.assurance_sheet,
             heading: HeadingLevel.TITLE,
             alignment: AlignmentType.CENTER,
           }),
@@ -59,11 +62,11 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       columnWidths: [1260, 2520, 3780, 2520, 1260],
       rows: [
         createContentRow(
-          '№ п/п',
-          'Обозначение документа',
-          'Наименование изделия, наименование документа',
-          'Версия',
-          'Номер последнего изменения',
+          t.serial_number,
+          t.document_designation,
+          t.product_name,
+          t.version,
+          t.last_change_number,
         ),
         createContentRow(
           '',
@@ -72,14 +75,14 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
           data.version,
           data.lastChangeNumber,
         ),
-        createContentRow('', '', 'SHA1', data.sha1, ''),
+        createContentRow('', '', data.hashFunction, data.hashValue, ''),
         createSpacingRow(),
         createContentRow(
           '',
           '',
-          'Наименование файла',
-          'Дата и время последнего изменения файла',
-          'Размер файла, байт',
+          t.file_name,
+          t.last_modified,
+          t.file_size,
         ),
         createContentRow(
           '',
@@ -91,10 +94,10 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         createSpacingRow(),
         createContentRow(
           '',
-          'Характер работы',
-          'ФИО',
-          'Подпись',
-          'Дата подписания',
+          t.work_type,
+          t.full_name,
+          t.signature,
+          t.signing_date,
         ),
         createContentRow(
           '',

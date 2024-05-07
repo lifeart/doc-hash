@@ -5,7 +5,7 @@ import { RoleForm } from './components/RoleForm';
 import { FileForm } from './components/FileForm';
 import { DocumentForm } from './components/DocumentForm';
 import { Print } from './components/Print';
-import { AlgorithmType, algos, type User, getHash } from './utils/constants';
+import { AlgorithmType, algos, type User, getHash, t } from './utils/constants';
 import { createAssuranceSheet } from './utils/document-creator';
 
 export default class App extends Component {
@@ -84,26 +84,29 @@ export default class App extends Component {
   }
   get fileLastModified() {
     return this.file?.lastModified
-        ? new Date(this.file.lastModified).toLocaleString()
-        : '';
+      ? new Date(this.file.lastModified).toLocaleString()
+      : '';
   }
   onPrint = () => {
     // create new window and render Print component to it
     const win = window.open('', 'printwindow');
     if (!win) return;
-    renderComponent(new Print({
-      last_change_number: this.last_change_number,
-      version: this.version,
-      document_name: this.document_name,
-      designation: this.designation,
-      fileHash: this.fileHash,
-      selectedAlgo: this.selectedAlgo,
-      fileName: this.fileName,
-      fileSize: this.fileSize,
-      // 20.11.2023 00:11:28
-      fileLastModified: this.fileLastModified,
-      users: this.users,
-    }), win.document.body);
+    renderComponent(
+      new Print({
+        last_change_number: this.last_change_number,
+        version: this.version,
+        document_name: this.document_name,
+        designation: this.designation,
+        fileHash: this.fileHash,
+        selectedAlgo: this.selectedAlgo,
+        fileName: this.fileName,
+        fileSize: this.fileSize,
+        // 20.11.2023 00:11:28
+        fileLastModified: this.fileLastModified,
+        users: this.users,
+      }),
+      win.document.body,
+    );
     // win.document.write(printLink);
     win.document.body.addEventListener('click', () => {
       win.print();
@@ -114,23 +117,24 @@ export default class App extends Component {
   };
   generateDocument = () => {
     createAssuranceSheet({
-        documentDesignation: this.designation,
-        productName: this.document_name,
-        version: this.version,
-        lastChangeNumber: this.last_change_number,
-        sha1: this.fileHash,
-        fileName: this.fileName,
-        lastModified: this.fileLastModified,
-        fileSize: this.fileSize,
-        workCharacter: this.users[0].role,
-        fullName: this.users[0].lastName,
-        signature: '',
-        signingDate: '',
-      }).then((link) => {
-        console.log('link', link);
-        this.fileLink = link;
-      });
-  }
+      documentDesignation: this.designation,
+      productName: this.document_name,
+      version: this.version,
+      lastChangeNumber: this.last_change_number,
+      hashValue: this.fileHash,
+      hashFunction: this.selectedAlgo,
+      fileName: this.fileName,
+      lastModified: this.fileLastModified,
+      fileSize: this.fileSize,
+      workCharacter: this.users[0].role,
+      fullName: this.users[0].lastName,
+      signature: '',
+      signingDate: '',
+    }).then((link) => {
+      console.log('link', link);
+      this.fileLink = link;
+    });
+  };
   docEffect = () => {
     return effect(() => {
       console.log('docEffect');
@@ -148,9 +152,8 @@ export default class App extends Component {
           ><h1
               class='text-center py-3'
               style='font-size: 16px; font-weight: 500;'
-            >Конструктор информационно-удостоверяющих листов<br />для
-              экспертизы. [GXT]
-              {{this.fileHash}}</h1></div>
+            >{{t.title}}
+            </h1></div>
           <DocumentForm
             @designation={{this.designation}}
             @document_name={{this.document_name}}
@@ -185,18 +188,20 @@ export default class App extends Component {
               class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
             >Создать
             </button>
-            
-            <button type="button" clas="btn btn-lg btn-secondary mt-2"
-                target="_blank"
-                rel="noreferrer"
-                {{on 'click' this.onPrint}}
-                >
-                Печать
-                </button>
 
-                <a href={{this.fileLink}} class="btn btn-lg btn-dark" download>
-                Скачать ИУЛ
-              </a>
-            </div></div></div></div>
+            <button
+              type='button'
+              clas='btn btn-lg btn-secondary mt-2'
+              target='_blank'
+              rel='noreferrer'
+              {{on 'click' this.onPrint}}
+            >
+              Печать
+            </button>
+
+            <a href={{this.fileLink}} class='btn btn-lg btn-dark' download>
+              Скачать ИУЛ
+            </a>
+          </div></div></div></div>
   </template>
 }

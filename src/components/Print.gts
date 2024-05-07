@@ -1,5 +1,6 @@
 import { Component } from '@lifeart/gxt';
 import { style } from './../utils/print-style';
+import { t } from './../utils/constants';
 
 export class Print extends Component {
   <template>
@@ -11,7 +12,7 @@ export class Print extends Component {
     </div>
 
     <div class='container'>
-      <h1>Информационно-удостоверяющий лист</h1>
+      <h1>{{t.assurance_sheet}}</h1>
 
       <table>
         <tr>
@@ -25,19 +26,13 @@ export class Print extends Component {
             документа
           </td>
           <td width='39.55%' class='text-center font-bold' colspan='3'>
-            Наименование изделия,
-            <br />
-            наименование документа
+            {{t.product_name}}
           </td>
           <td width='15.23%' class='text-center font-bold'>
-            Версия
+            {{t.version}}
           </td>
           <td width='15.23%' class='text-center font-bold'>
-            Номер
-            <br />
-            последнего
-            <br />
-            изменения
+            {{t.last_change_number}}
           </td>
         </tr>
 
@@ -66,17 +61,13 @@ export class Print extends Component {
 
         <tr>
           <td class='text-center font-bold' colspan='3'>
-            Наименование файла
+            {{t.file_name}}
           </td>
           <td class='text-center font-bold'>
-            Дата и время
-            <br />
-            последнего изменения файла
+            {{t.last_modified}}
           </td>
           <td class='text-center font-bold' colspan='3' width='33.3%'>
-            Размер файла,
-            <br />
-            байт
+            {{t.file_size}}
           </td>
         </tr>
         <tr>
@@ -93,16 +84,16 @@ export class Print extends Component {
       <table style='margin-top: 2%'>
         <tr>
           <td width='25%' class='text-center font-bold'>
-            Характер работы
+            {{t.work_type}}
           </td>
           <td width='25%' class='text-center font-bold'>
-            ФИО
+            {{t.full_name}}
           </td>
           <td width='25%' class='text-center font-bold'>
-            Подпись
+            {{t.signature}}
           </td>
           <td width='25%' class='text-center font-bold'>
-            Дата подписания
+            {{t.signing_date}}
           </td>
         </tr>
 
