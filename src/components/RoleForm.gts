@@ -1,5 +1,5 @@
 import { Component, tracked } from '@lifeart/gxt';
-import { roles, t, type User, not } from './../utils/constants';
+import { roles, t, type User } from './../utils/constants';
 import { RoleList } from './RoleList';
 export class RoleForm extends Component<{
   Args: {

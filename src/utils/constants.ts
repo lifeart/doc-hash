@@ -140,9 +140,3 @@ export async function getHash(file: File, algorithm: AlgorithmType) {
 
   return hasher.digest();
 }
-
-
-
-export function not(param: any) {
-  return !param;
-}

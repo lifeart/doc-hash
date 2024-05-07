@@ -1,6 +1,6 @@
 import { Component } from '@lifeart/gxt';
 import { style } from './../utils/print-style';
-import { t, not } from './../utils/constants';
+import { t } from './../utils/constants';
 
 export class Print extends Component {
   <template>

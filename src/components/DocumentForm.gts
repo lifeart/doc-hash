@@ -1,5 +1,5 @@
 import { Component } from '@lifeart/gxt';
-import { t, not } from './../utils/constants';
+import { t } from './../utils/constants';
 
 export class DocumentForm extends Component<{
   Args: {
