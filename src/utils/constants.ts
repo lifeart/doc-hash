@@ -6,12 +6,6 @@ export enum AlgorithmType {
   CRC32 = 'crc32',
 }
 
-export const HashAlgorithmsMap = {
-  [AlgorithmType.MD5]: createMD5,
-  [AlgorithmType.SHA1]: createSHA1,
-  [AlgorithmType.CRC32]: createCRC32,
-};
-
 export const HashFunctions: Record<
   AlgorithmType,
   null | Awaited<ReturnType<typeof createMD5>>
@@ -71,12 +65,20 @@ export const t = {
 };
 
 export async function getHash(file: File, algorithm: AlgorithmType) {
+  const { createMD5, createSHA1, createCRC32 } = await import('hash-wasm');
+
   const chunkSize = 64 * 1024 * 1024;
   const fileReader = new FileReader();
   const chunkNumber = Math.floor(file.size / chunkSize);
 
   if (!HashFunctions[algorithm]) {
-    HashFunctions[algorithm] = await HashAlgorithmsMap[algorithm]();
+    if (algorithm === AlgorithmType.MD5) {
+      HashFunctions[algorithm] = await createMD5();
+    } else if (algorithm === AlgorithmType.SHA1) {
+      HashFunctions[algorithm] = await createSHA1();
+    } else if (algorithm === AlgorithmType.CRC32) {
+      HashFunctions[algorithm] = await createCRC32();
+    }
   }
 
   const hasher = HashFunctions[algorithm]!;
