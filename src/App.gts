@@ -1,9 +1,10 @@
-import { Component, tracked, effect } from '@lifeart/gxt';
+import { Component, tracked, effect, renderComponent } from '@lifeart/gxt';
 
 import { Algorithms } from './components/Algorithms';
 import { RoleForm } from './components/RoleForm';
 import { FileForm } from './components/FileForm';
 import { DocumentForm } from './components/DocumentForm';
+import { Print } from './components/Print';
 import { AlgorithmType, algos, type User, getHash } from './utils/constants';
 
 export default class App extends Component {
@@ -45,7 +46,7 @@ export default class App extends Component {
       console.log('hashEffect');
       const algo = this.selectedAlgo;
       const file = this.file;
-      
+
       if (file) {
         getHash(file, algo).then((hash) => {
           console.log('hash', hash);
@@ -58,11 +59,47 @@ export default class App extends Component {
           this.fileHash = '';
         });
       }
-    })
-  }
+    });
+  };
   get isFormInvalid() {
-    return !this.designation || !this.document_name || !this.file || !this.fileHash || !this.users.length || !this.version || !this.last_change_number || !this.selectedAlgo;
+    return (
+      !this.designation ||
+      !this.document_name ||
+      !this.file ||
+      !this.fileHash ||
+      !this.users.length ||
+      !this.version ||
+      !this.last_change_number ||
+      !this.selectedAlgo
+    );
   }
+  onPrint = () => {
+    // create new window and render Print component to it
+    const win = window.open('', 'printwindow');
+    if (!win) return;
+    renderComponent(new Print({
+      last_change_number: this.last_change_number,
+      version: this.version,
+      document_name: this.document_name,
+      designation: this.designation,
+      fileHash: this.fileHash,
+      selectedAlgo: this.selectedAlgo,
+      fileName: this.file?.name,
+      fileSize: this.file?.size,
+      // 20.11.2023 00:11:28
+      fileLastModified: this.file?.lastModified
+        ? new Date(this.file.lastModified).toLocaleString()
+        : '',
+      users: this.users,
+    }), win.document.body);
+    // win.document.write(printLink);
+    win.document.body.addEventListener('click', () => {
+      win.print();
+      win.close();
+    });
+    win.document.close();
+    win.focus();
+  };
   <template>
     <div class='container py-2' {{this.hashEffect}}>
       <div class='row justify-content-center'><div
@@ -73,7 +110,8 @@ export default class App extends Component {
               class='text-center py-3'
               style='font-size: 16px; font-weight: 500;'
             >Конструктор информационно-удостоверяющих листов<br />для
-              экспертизы. [GXT] {{this.fileHash}}</h1></div>
+              экспертизы. [GXT]
+              {{this.fileHash}}</h1></div>
           <DocumentForm
             @designation={{this.designation}}
             @document_name={{this.document_name}}
@@ -82,21 +120,19 @@ export default class App extends Component {
             @onChange={{this.onDocumentFieldChange}}
           />
 
-          <FileForm
-            @onFileSelect={{this.onFileSelect}}
-          >
-          <div class="container">
-            <div class="row">
-              <div class="col-4">
-                <Algorithms
-                  @selected={{this.selectedAlgo}}
-                  @onSelect={{this.selectAlgo}}
-                />
+          <FileForm @onFileSelect={{this.onFileSelect}}>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-4'>
+                  <Algorithms
+                    @selected={{this.selectedAlgo}}
+                    @onSelect={{this.selectAlgo}}
+                  />
+                </div>
+                <div class='col-8'>
+                  <pre class='pt-2 font-weight-bold'>{{this.fileHash}}</pre>
+                </div>
               </div>
-              <div class="col-8">
-                <pre class="pt-2 font-weight-bold">{{this.fileHash}}</pre>
-              </div>
-            </div>
             </div>
           </FileForm>
 
@@ -109,6 +145,15 @@ export default class App extends Component {
               class='btn btn-lg'
               class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
             >Создать
-            </button></div></div></div></div>
+            </button>
+            
+            <button type="button" clas="btn btn-lg btn-secondary mt-2"
+                target="_blank"
+                rel="noreferrer"
+                {{on 'click' this.onPrint}}
+                >
+                Печать
+                </button>
+            </div></div></div></div>
   </template>
 }
