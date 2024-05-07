@@ -12,6 +12,7 @@
     "@glint/core": "^1.4.0",
     "@types/qunit": "^2.19.10",
     "autoprefixer": "^10.4.19",
+    "docx": "^8.5.0",
     "glint-environment-gxt": "^0.0.2",
     "hash-wasm": "^4.11.0",
     "postcss": "^8.4.38",

@@ -6,6 +6,7 @@ import { FileForm } from './components/FileForm';
 import { DocumentForm } from './components/DocumentForm';
 import { Print } from './components/Print';
 import { AlgorithmType, algos, type User, getHash } from './utils/constants';
+import { createAssuranceSheet } from './utils/document-creator';
 
 export default class App extends Component {
   @tracked selectedAlgo = algos[0].value;
@@ -75,6 +76,17 @@ export default class App extends Component {
       !this.selectedAlgo
     );
   }
+  get fileName() {
+    return this.file?.name;
+  }
+  get fileSize() {
+    return this.file?.size;
+  }
+  get fileLastModified() {
+    return this.file?.lastModified
+        ? new Date(this.file.lastModified).toLocaleString()
+        : '',
+  }
   onPrint = () => {
     // create new window and render Print component to it
     const win = window.open('', 'printwindow');
@@ -86,12 +98,10 @@ export default class App extends Component {
       designation: this.designation,
       fileHash: this.fileHash,
       selectedAlgo: this.selectedAlgo,
-      fileName: this.file?.name,
-      fileSize: this.file?.size,
+      fileName: this.fileName,
+      fileSize: this.fileSize,
       // 20.11.2023 00:11:28
-      fileLastModified: this.file?.lastModified
-        ? new Date(this.file.lastModified).toLocaleString()
-        : '',
+      fileLastModified: this.fileLastModified,
       users: this.users,
     }), win.document.body);
     // win.document.write(printLink);
@@ -102,8 +112,35 @@ export default class App extends Component {
     win.document.close();
     win.focus();
   };
+  generateDocument = () => {
+    createAssuranceSheet({
+        documentDesignation: this.designation,
+        productName: this.document_name,
+        version: this.version,
+        lastChangeNumber: tihs.last_change_number,
+        sha1: this.fileHash,
+        fileName: this.fileName,
+        lastModified: this.fileLastModified,
+        fileSize: this.fileSize,
+        workCharacter: this.users[0].role,
+        fullName: this.users[0].lastName,
+        signature: '',
+        signingDate: '',
+      }).then((link) => {
+        console.log('link', link);
+        this.fileLink = link;
+      });
+  }
+  docEffect = () => {
+    return effect(() => {
+      console.log('docEffect');
+      if (!this.isFormInvalid) {
+        this.generateDocument();
+      }
+    });
+  };
   <template>
-    <div class='container py-2' {{this.hashEffect}}>
+    <div class='container py-2' {{this.hashEffect}} {{this.docEffect}}>
       <div class='row justify-content-center'><div
           class='col-12 col-md-10 col-lg-8 bg-white pb-5 rounded-3'
         ><div
