@@ -1,8 +1,22 @@
 import { Component } from '@lifeart/gxt';
 import { style } from './../utils/print-style';
-import { t } from './../utils/constants';
+import { t, type User } from './../utils/constants';
 
-export class Print extends Component {
+export class Print extends Component<{
+  Args: {
+    hidePrintButton?: boolean;
+    designation: string;
+    document_name: string;
+    version: number;
+    last_change_number: number;
+    selectedAlgo: string;
+    fileHash: string;
+    fileName: string;
+    fileLastModified: string;
+    fileSize: string | number;
+    users: User[];
+  };
+}> {
   <template>
     <style>{{style}}</style>
     {{#if (not @hidePrintButton)}}

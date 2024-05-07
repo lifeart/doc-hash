@@ -2,10 +2,16 @@ import { Component } from '@lifeart/gxt';
 import { t } from './../utils/constants';
 
 export class FileForm extends Component<{
-  onFileSelect: (file: File) => void;
+  Args: {
+    onFileSelect: (file: File | null) => void;
+  };
+  Blocks: {
+    default: [];
+  };
 }> {
   onFileChange = (e: Event) => {
-    const file = e.target.files[0];
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
     this.args.onFileSelect(file ?? null);
   };
   <template>

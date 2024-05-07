@@ -3,13 +3,13 @@ import { t, type User } from './constants';
 type AssuranceSheetData = {
   documentDesignation: string;
   productName: string;
-  version: string;
-  lastChangeNumber: string;
+  version: number;
+  lastChangeNumber: number;
   hashFunction: string;
   hashValue: string;
   fileName: string;
   lastModified: string;
-  fileSize: string;
+  fileSize: string | number;
   users: User[];
 };
 

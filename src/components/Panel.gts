@@ -1,6 +1,14 @@
 import { Component } from '@lifeart/gxt';
 
-export class Panel extends Component {
+export class Panel extends Component<{
+  Args: {
+    title: string;
+  };
+  Element: HTMLDivElement;
+  Blocks: {
+    default: [];
+  };
+}> {
   <template>
     <div class='bg-white shadow sm:rounded-lg' ...attributes>
       <div class='px-4 py-5 sm:p-6'>

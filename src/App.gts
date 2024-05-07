@@ -6,7 +6,14 @@ import { FileForm } from './components/FileForm';
 import { DocumentForm } from './components/DocumentForm';
 import { Print } from './components/Print';
 import { Panel } from './components/Panel';
-import { AlgorithmType, algos, type User, getHash, t } from './utils/constants';
+import {
+  AlgorithmType,
+  algos,
+  type User,
+  getHash,
+  t,
+  DocumentField,
+} from './utils/constants';
 import { createAssuranceSheet } from './utils/document-creator';
 
 export default class App extends Component {
@@ -30,7 +37,8 @@ export default class App extends Component {
   fileHash: string = '';
   @tracked
   fileLink: string = '';
-  onDocumentFieldChange = (field: string, value: string | number) => {
+  onDocumentFieldChange = (field: DocumentField, value: string | number) => {
+    // @ts-expect-error value is string | number
     this[field] = value;
   };
   selectAlgo = (name: AlgorithmType) => {
@@ -42,10 +50,10 @@ export default class App extends Component {
   onAddUser = (user: User) => {
     this.users = [...this.users, user];
   };
-  onFileSelect = (file: File) => {
+  onFileSelect = (file: File | null) => {
     this.file = file;
   };
-  hashEffect = () => {
+  hashEffect = (_: HTMLDivElement) => {
     return effect(() => {
       console.log('hashEffect');
       const algo = this.selectedAlgo;
@@ -59,7 +67,7 @@ export default class App extends Component {
       } else {
         new Promise((resolve) => {
           resolve('');
-        }).then((hash) => {
+        }).then(() => {
           this.fileHash = '';
         });
       }
@@ -107,7 +115,7 @@ export default class App extends Component {
         // 20.11.2023 00:11:28
         fileLastModified: this.fileLastModified,
         users: this.users,
-      }),
+      }) as any,
       win.document.body,
     );
     // win.document.write(printLink);
@@ -135,7 +143,7 @@ export default class App extends Component {
       this.fileLink = link;
     });
   };
-  docEffect = () => {
+  docEffect = (_: HTMLDivElement) => {
     return effect(() => {
       console.log('docEffect');
       if (!this.isFormInvalid) {

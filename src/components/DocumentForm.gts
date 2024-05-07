@@ -1,5 +1,5 @@
 import { Component } from '@lifeart/gxt';
-import { t } from './../utils/constants';
+import { type DocumentField, t } from './../utils/constants';
 
 export class DocumentForm extends Component<{
   Args: {
@@ -7,14 +7,15 @@ export class DocumentForm extends Component<{
     document_name: string;
     version: number;
     last_change_number: number;
-    onChange: (field: string, value: string | number) => void;
+    onChange: (field: DocumentField, value: string | number) => void;
   };
 }> {
-  onChange = (field: string, e: Event) => {
+  onChange = (field: DocumentField, e: Event) => {
+    const target = e.target as HTMLInputElement;
     if (field === 'version' || field === 'last_change_number') {
-      this.args.onChange(field, (e.target as HTMLInputElement).valueAsNumber);
+      this.args.onChange(field, target.valueAsNumber);
     } else {
-      this.args.onChange(field, (e.target as HTMLInputElement).value);
+      this.args.onChange(field, target.value);
     }
   };
 
