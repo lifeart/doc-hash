@@ -5,6 +5,7 @@ import { RoleForm } from './components/RoleForm';
 import { FileForm } from './components/FileForm';
 import { DocumentForm } from './components/DocumentForm';
 import { Print } from './components/Print';
+import { Panel } from './components/Panel';
 import { AlgorithmType, algos, type User, getHash, t } from './utils/constants';
 import { createAssuranceSheet } from './utils/document-creator';
 
@@ -153,52 +154,62 @@ export default class App extends Component {
               style='font-size: 16px; font-weight: 500;'
             >{{t.title}}
             </h1></div>
-          <DocumentForm
-            @designation={{this.designation}}
-            @document_name={{this.document_name}}
-            @version={{this.version}}
-            @last_change_number={{this.last_change_number}}
-            @onChange={{this.onDocumentFieldChange}}
-          />
 
-          <FileForm @onFileSelect={{this.onFileSelect}}>
-            <div class='container'>
-              <div class='row'>
-                <div class='col-4'>
-                  <Algorithms
-                    @selected={{this.selectedAlgo}}
-                    @onSelect={{this.selectAlgo}}
-                  />
-                </div>
-                <div class='col-8'>
-                  <pre class='pt-2 font-weight-bold'>{{this.fileHash}}</pre>
+          <Panel @title={{t.document}}>
+            <DocumentForm
+              @designation={{this.designation}}
+              @document_name={{this.document_name}}
+              @version={{this.version}}
+              @last_change_number={{this.last_change_number}}
+              @onChange={{this.onDocumentFieldChange}}
+            />
+          </Panel>
+
+          <Panel @title={{t.file}} class='mt-4'>
+            <FileForm @onFileSelect={{this.onFileSelect}}>
+              <div class='container'>
+                <div class='row'>
+                  <div class='col-4'>
+                    <Algorithms
+                      @selected={{this.selectedAlgo}}
+                      @onSelect={{this.selectAlgo}}
+                    />
+                  </div>
+                  <div class='col-8'>
+                    <pre class='pt-2 font-weight-bold'>{{this.fileHash}}</pre>
+                  </div>
                 </div>
               </div>
-            </div>
-          </FileForm>
+            </FileForm>
+          </Panel>
 
-          <RoleForm
-            @users={{this.users}}
-            @onRemove={{this.onRemoveUser}}
-            @onAdd={{this.onAddUser}}
-          />
-
-          <h1>{{t.preview}}</h1>
-          <div class='container' shadowrootmode='open'>
-            <Print
-              @last_change_number={{this.last_change_number}}
-              @version={{this.version}}
-              @document_name={{this.document_name}}
-              @designation={{this.designation}}
-              @fileHash={{this.fileHash}}
-              @selectedAlgo={{this.selectedAlgo}}
-              @fileName={{this.fileName}}
-              @fileSize={{this.fileSize}}
-              @fileLastModified={{this.fileLastModified}}
+          <Panel @title={{t.project_roles}} class='mt-4'>
+            <RoleForm
               @users={{this.users}}
-              @hidePrintButton={{true}}
+              @onRemove={{this.onRemoveUser}}
+              @onAdd={{this.onAddUser}}
             />
-          </div>
+          </Panel>
+
+          <Panel @title={{t.preview}} class='mt-4'>
+            <div class='container' shadowrootmode='open'>
+              <Print
+                @last_change_number={{this.last_change_number}}
+                @version={{this.version}}
+                @document_name={{this.document_name}}
+                @designation={{this.designation}}
+                @fileHash={{this.fileHash}}
+                @selectedAlgo={{this.selectedAlgo}}
+                @fileName={{this.fileName}}
+                @fileSize={{this.fileSize}}
+                @fileLastModified={{this.fileLastModified}}
+                @users={{this.users}}
+                @hidePrintButton={{true}}
+              />
+            </div>
+
+          </Panel>
+
           <div class='mt-3 mb-3 d-grid'><button
               class='btn btn-lg mb-3'
               class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}

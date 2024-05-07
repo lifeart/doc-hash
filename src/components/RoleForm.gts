@@ -25,8 +25,7 @@ export class RoleForm extends Component<{
     return !this.role.length || !this.lastName.length;
   }
   <template>
-    <div class='bg-warning bg-opacity-10 pt-3 pb-3 px-4'>
-      <h3 class='py-2'>3. {{t.project_roles}}</h3>
+    <div>
       {{#if (not @users.length)}}
         <div
           class='alert alert-warning mt-4'
