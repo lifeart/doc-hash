@@ -85,7 +85,7 @@ export default class App extends Component {
   get fileLastModified() {
     return this.file?.lastModified
         ? new Date(this.file.lastModified).toLocaleString()
-        : '',
+        : '';
   }
   onPrint = () => {
     // create new window and render Print component to it
@@ -117,7 +117,7 @@ export default class App extends Component {
         documentDesignation: this.designation,
         productName: this.document_name,
         version: this.version,
-        lastChangeNumber: tihs.last_change_number,
+        lastChangeNumber: this.last_change_number,
         sha1: this.fileHash,
         fileName: this.fileName,
         lastModified: this.fileLastModified,
