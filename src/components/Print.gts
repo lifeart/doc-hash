@@ -32,7 +32,7 @@ export class Print extends Component<{
 
       <table>
         <tr>
-          <td class='text-center font-bold'>
+          <td width='15%' class='text-center font-bold'>
             {{t.serial_number}}
           </td>
           <td width='23.7%' class='text-center font-bold'>

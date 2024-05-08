@@ -54,6 +54,7 @@ export function style() {
   
   .font-bold {
     font-weight: bold;
+    word-break: auto-phrase;
   }
   
   .header,

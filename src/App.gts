@@ -15,43 +15,57 @@ import {
   type DocumentField,
 } from './utils/constants';
 import { createAssuranceSheet } from './utils/document-creator';
+import { read, write } from './utils/persisted';
 
 export default class App extends Component {
-  @tracked selectedAlgo = algos[0].value;
+  @tracked selectedAlgo = read('algo', algos[0].value) as AlgorithmType;
   @tracked
-  users: User[] = [
-    { lastName: 'Иванов Иван Иванович', role: 'Эксперт' },
-    { lastName: 'Петров Петр Петрович', role: 'Эксперт' },
-    { lastName: 'Сидоров Сидор Сидорович', role: 'Эксперт' },
-  ];
+  users: User[] = JSON.parse(
+    read(
+      'users',
+      JSON.stringify([
+        { lastName: 'Иванов Иван Иванович', role: 'Эксперт' },
+        { lastName: 'Петров Петр Петрович', role: 'Эксперт' },
+        { lastName: 'Сидоров Сидор Сидорович', role: 'Эксперт' },
+      ]),
+    ),
+  ) as User[];
   @tracked file: null | File = null;
   @tracked
-  designation: string = '';
+  designation: string = read('designation', '');
   @tracked
-  document_name: string = '';
+  document_name: string = read('document_name', '');
   @tracked
-  version: number = 1;
+  version: number = parseInt(read('version', '1'), 10);
   @tracked
-  last_change_number: number = 1;
+  last_change_number: number = parseInt(read('last_change_number', '1'), 10);
   @tracked
-  fileHash: string = '';
+  fileHash: string = read('fileHash', '');
   @tracked
-  fileLink: string = '';
+  fileLink: string = read('fileLink', '');
   onDocumentFieldChange = (field: DocumentField, value: string | number) => {
     // @ts-expect-error value is string | number
     this[field] = value;
+    write(field, String(value));
   };
   selectAlgo = (name: AlgorithmType) => {
     this.selectedAlgo = name;
+    write('algo', name);
   };
   onRemoveUser = (user: User) => {
     this.users = this.users.filter((u) => u !== user);
+    write('users', this.users);
   };
   onAddUser = (user: User) => {
     this.users = [...this.users, user];
+    write('users', this.users);
   };
   onFileSelect = (file: File | null) => {
     this.file = file;
+  };
+  setFileHash = (hash: string) => {
+    this.fileHash = hash;
+    write('fileHash', hash);
   };
   hashEffect = (_: HTMLDivElement) => {
     return effect(() => {
@@ -62,13 +76,13 @@ export default class App extends Component {
       if (file) {
         getHash(file, algo).then((hash) => {
           console.log('hash', hash);
-          this.fileHash = hash;
+          this.setFileHash(hash);
         });
       } else {
         new Promise((resolve) => {
           resolve('');
         }).then(() => {
-          this.fileHash = '';
+          this.setFileHash('');
         });
       }
     });
@@ -141,6 +155,7 @@ export default class App extends Component {
     }).then((link) => {
       console.log('link', link);
       this.fileLink = link;
+      write('fileLink', link);
     });
   };
   docEffect = (_: HTMLDivElement) => {
