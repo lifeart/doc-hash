@@ -7,9 +7,9 @@ export class Print extends Component<{
   Args: {
     hidePrintButton?: boolean;
     designation: string;
-    document_name: string;
+    documentName: string;
     version: number;
-    last_change_number: number;
+    lastChangeNumber: number;
     selectedAlgo: string;
     fileHash: string;
     fileName: string;
@@ -53,9 +53,9 @@ export class Print extends Component<{
         <tr>
           <td>&nbsp;</td>
           <td class='text-center'>{{@designation}}</td>
-          <td colspan='3'>{{@document_name}}</td>
+          <td colspan='3'>{{@documentName}}</td>
           <td class='text-center'>{{@version}}</td>
-          <td class='text-center'>{{@last_change_number}}</td>
+          <td class='text-center'>{{@lastChangeNumber}}</td>
         </tr>
 
         <tr>

@@ -34,11 +34,11 @@ export default class App extends Component {
   @tracked
   designation: string = read('designation', '');
   @tracked
-  document_name: string = read('document_name', '');
+  documentName: string = read('documentName', '');
   @tracked
   version: number = parseInt(read('version', '1'), 10);
   @tracked
-  last_change_number: number = parseInt(read('last_change_number', '1'), 10);
+  lastChangeNumber: number = parseInt(read('lastChangeNumber', '1'), 10);
   @tracked
   fileHash: string = read('fileHash', '');
   @tracked
@@ -90,12 +90,12 @@ export default class App extends Component {
   get isFormInvalid() {
     return (
       !this.designation ||
-      !this.document_name ||
+      !this.documentName ||
       !this.file ||
       !this.fileHash ||
       !this.users.length ||
       !this.version ||
-      !this.last_change_number ||
+      !this.lastChangeNumber ||
       !this.selectedAlgo
     );
   }
@@ -118,9 +118,9 @@ export default class App extends Component {
     if (!win) return;
     renderComponent(
       new Print({
-        last_change_number: this.last_change_number,
+        lastChangeNumber: this.lastChangeNumber,
         version: this.version,
-        document_name: this.document_name,
+        documentName: this.documentName,
         designation: this.designation,
         fileHash: this.fileHash,
         selectedAlgo: this.selectedAlgo,
@@ -143,9 +143,9 @@ export default class App extends Component {
   generateDocument = () => {
     createAssuranceSheet({
       documentDesignation: this.designation,
-      productName: this.document_name,
+      productName: this.documentName,
       version: this.version,
-      lastChangeNumber: this.last_change_number,
+      lastChangeNumber: this.lastChangeNumber,
       hashValue: this.fileHash,
       hashFunction: this.selectedAlgo,
       fileName: this.fileName,
@@ -166,6 +166,12 @@ export default class App extends Component {
       }
     });
   };
+  get docFileName() {
+    const fileName = this.fileName.split(' ').join('_');
+    const fileVersion = this.version;
+    const lastChangeNumber = this.lastChangeNumber;
+    return `${t.iul}__${fileName}__v.${fileVersion}.${lastChangeNumber}.docx`;
+  }
   <template>
     <div
       class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'
@@ -181,9 +187,9 @@ export default class App extends Component {
           <Panel @title={{t.document}}>
             <DocumentForm
               @designation={{this.designation}}
-              @document_name={{this.document_name}}
+              @documentName={{this.documentName}}
               @version={{this.version}}
-              @last_change_number={{this.last_change_number}}
+              @lastChangeNumber={{this.lastChangeNumber}}
               @onChange={{this.onDocumentFieldChange}}
             />
           </Panel>
@@ -217,9 +223,9 @@ export default class App extends Component {
           <Panel @title={{t.preview}} class='mt-4 pb-6'>
             <div shadowrootmode='open'>
               <Print
-                @last_change_number={{this.last_change_number}}
+                @lastChangeNumber={{this.lastChangeNumber}}
                 @version={{this.version}}
-                @document_name={{this.document_name}}
+                @documentName={{this.documentName}}
                 @designation={{this.designation}}
                 @fileHash={{this.fileHash}}
                 @selectedAlgo={{this.selectedAlgo}}
@@ -247,7 +253,7 @@ export default class App extends Component {
             <a
               href={{this.fileLink}}
               class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
-              download
+              download={{this.docFileName}}
             >
               {{t.download_assurance_sheet}}
             </a>
