@@ -52,4 +52,22 @@ export const t = {
   download_assurance_sheet: 'Скачать ИУЛ',
   // Передпросмотр
   preview: 'Передпросмотр',
+  // Роль_ Выполнил
+  role_creator: 'Выполнил',
+  // Роль_ ГИП
+  role_gip: 'ГИП',
+  // Роль_ ГАП
+  role_gap: 'ГАП',
+  // Роль_ Ген.директор
+  role_general_director: 'Ген.директор',
+  // Роль_ Гл.инженер
+  role_chief_engineer: 'Гл.инженер',
+  // Роль_ Научный контроль
+  role_scientific_control: 'Н.контроль',
+  // Роль_ Разработал
+  role_developer: 'Разработал',
+  // Роль_ Проверил
+  role_verifier: 'Проверил',
+  // Роль_ Составил
+  role_composer: 'Составил',
 };

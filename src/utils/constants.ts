@@ -1,4 +1,5 @@
 import type { createMD5 as createMD5Type } from 'hash-wasm';
+import { t } from '@/utils/t';
 
 export enum AlgorithmType {
   MD5 = 'md5',
@@ -26,15 +27,15 @@ export const algos = [
 ];
 
 export const defaultRoles = [
-  'Выполнил',
-  'ГИП',
-  'ГАП',
-  'Ген.директор',
-  'Гл.инженер',
-  'Н.контроль',
-  'Разработал',
-  'Проверил',
-  'Составил',
+  t.role_creator,
+  t.role_gip,
+  t.role_gap,
+  t.role_general_director,
+  t.role_chief_engineer,
+  t.role_scientific_control,
+  t.role_developer,
+  t.role_verifier,
+  t.role_composer,
 ];
 
 export const roles = [
