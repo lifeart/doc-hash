@@ -192,17 +192,17 @@ export default class App extends Component {
 
           <Panel @title={{t.file}} class='mt-4'>
             <FileForm @onFileSelect={{this.onFileSelect}}>
-              <div class='container'>
-                <div class='flex justify-start'>
-                  <div class='pr-4'>
-                    <Algorithms
-                      @selected={{this.selectedAlgo}}
-                      @onSelect={{this.selectAlgo}}
-                    />
-                  </div>
-                  <div class='col-8'>
-                    <pre class='pt-2 font-weight-bold'>{{this.fileHash}}</pre>
-                  </div>
+              <div class='flex'>
+                <div class='flex-auto'>
+                  <Algorithms
+                    @selected={{this.selectedAlgo}}
+                    @onSelect={{this.selectAlgo}}
+                  />
+                </div>
+                <div class='flex-auto'>
+                  <pre
+                    class='pt-2 font-weight-bold text-sm overflow-hidden p-2'
+                  >{{this.fileHash}}</pre>
                 </div>
               </div>
             </FileForm>
