@@ -37,7 +37,7 @@ export class RoleForm extends Component<{
           class='mt-4 ml-4 text-orange-500'
         >{{t.specify_role_and_surname}}</div>
       {{/if}}
-      <ul role='list' class='divide-y divide-gray-200'>
+      <ul role='list' class='divide-y divide-gray-200 m-4'>
         {{#each @users as |user|}}
           <RoleList @user={{user}} @onRemove={{@onRemove}} />
         {{/each}}

@@ -14,7 +14,7 @@ export class RoleList extends Component<{
         <div class='flex-auto px-4 w-2/5'>{{@user.lastName}}</div>
         <div class='flex-auto px-4'>
           <button
-            class='bg-red-100 w-8 rounded text-gray shadow border-2 border-red-200 text-center'
+            class='hover:bg-red-100 w-8 rounded text-gray hover:shadow border-2 hover:border-red-200 text-center'
             {{on 'click' (fn @onRemove @user)}}
           >×</button>
         </div>
