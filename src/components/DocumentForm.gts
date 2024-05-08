@@ -1,7 +1,8 @@
 import { Component } from '@lifeart/gxt';
-import { type DocumentField, t } from './../utils/constants';
-import { Input } from './Input';
-import { Label } from './Label';
+import { type DocumentField } from '@/utils/constants';
+import { Input } from '@/components/Input';
+import { Label } from '@/components/Label';
+import { t } from '@/utils/t';
 
 export class DocumentForm extends Component<{
   Args: {

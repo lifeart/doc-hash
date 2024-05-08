@@ -1,7 +1,7 @@
 import { Component } from '@lifeart/gxt';
-import { t } from './../utils/constants';
-import { Input } from './Input';
-import { Label } from './Label';
+import { t } from '@/utils/t';
+import { Input } from '@/components/Input';
+import { Label } from '@/components/Label';
 
 export class FileForm extends Component<{
   Args: {

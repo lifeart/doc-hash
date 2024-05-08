@@ -1,6 +1,7 @@
 import { Component } from '@lifeart/gxt';
-import { style } from './../utils/print-style';
-import { t, type User } from './../utils/constants';
+import { style } from '@/utils/print-style';
+import { type User } from './../utils/constants';
+import { t } from '@/utils/t';
 
 export class Print extends Component<{
   Args: {

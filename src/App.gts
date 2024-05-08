@@ -4,18 +4,18 @@ import { Algorithms } from './components/Algorithms';
 import { RoleForm } from './components/RoleForm';
 import { FileForm } from './components/FileForm';
 import { DocumentForm } from './components/DocumentForm';
-import { Print } from './components/Print';
-import { Panel } from './components/Panel';
+import { Print } from '@/components/Print';
+import { Panel } from '@/components/Panel';
 import {
   AlgorithmType,
   algos,
   type User,
   getHash,
-  t,
   type DocumentField,
-} from './utils/constants';
-import { createAssuranceSheet } from './utils/document-creator';
-import { read, write } from './utils/persisted';
+} from '@/utils/constants';
+import { createAssuranceSheet } from '@/utils/document-creator';
+import { read, write } from '@/utils/persisted';
+import { t } from '@/utils/t';
 
 export default class App extends Component {
   @tracked selectedAlgo = read('algo', algos[0].value) as AlgorithmType;

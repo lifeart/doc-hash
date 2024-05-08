@@ -1,5 +1,5 @@
 import { Component } from '@lifeart/gxt';
-import { AlgorithmType, algos } from './../utils/constants';
+import { AlgorithmType, algos } from '@/utils/constants';
 
 export class Algorithms extends Component<{
   Args: { selected: AlgorithmType; onSelect: (alg: AlgorithmType) => void };

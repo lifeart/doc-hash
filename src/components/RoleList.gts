@@ -1,5 +1,5 @@
 import { Component } from '@lifeart/gxt';
-import type { User } from './../utils/constants';
+import type { User } from '@/utils/constants';
 
 export class RoleList extends Component<{
   Args: {

@@ -1,4 +1,5 @@
-import { t, type User } from './constants';
+import { type User } from './constants';
+import { t } from './t';
 
 type AssuranceSheetData = {
   documentDesignation: string;
