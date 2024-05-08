@@ -1,6 +1,7 @@
 import { Component } from '@lifeart/gxt';
 import { t } from './../utils/constants';
 import { Input } from './Input';
+import { Label } from './Label';
 
 export class FileForm extends Component<{
   Args: {
@@ -26,9 +27,7 @@ export class FileForm extends Component<{
         />
       </div>
       <div class='mt-4 d-flex flex-column align-items-start'>
-        <label
-          class='form-label me-3 py-0'
-        >{{t.checksum_calculation_algorithm}}:</label>
+        <Label @for=''>{{t.checksum_calculation_algorithm}}:</Label>
         {{yield}}
       </div>
     </div>

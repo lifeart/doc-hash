@@ -24,7 +24,7 @@ export class DocumentForm extends Component<{
   <template>
     <div>
       <div class='flex'>
-        <div class='flex-auto'>
+        <div class='flex-auto p-4'>
           <Label @for='designation'>{{t.designation}}:</Label>
           <Input
             type='text'
@@ -37,20 +37,21 @@ export class DocumentForm extends Component<{
       </div>
 
       <div class='flex'>
-        <div class='flex-auto'>
+        <div class='flex-auto p-4'>
           <Label @for='document_name'>{{t.document_name}}:</Label>
           <textarea
             id='document_name'
             value={{@document_name}}
+            class='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
             class={{if (not @document_name.length) 'border-danger' ''}}
-            rows='3'
+            rows='2'
             {{on 'input' (fn this.onChange 'document_name')}}
           ></textarea>
         </div>
       </div>
 
       <div class='flex'>
-        <div class='flex-auto'>
+        <div class='flex-auto p-4'>
           <Label @for='version'>{{t.version}}:</Label>
           <Input
             type='number'
@@ -61,7 +62,7 @@ export class DocumentForm extends Component<{
           />
         </div>
 
-        <div class='flex-auto'>
+        <div class='flex-auto p-4'>
           <Label @for='last_change_number'>{{t.last_change_number}}:</Label>
 
           <Input

@@ -167,8 +167,12 @@ export default class App extends Component {
     });
   };
   <template>
-    <div class='container py-2' {{this.hashEffect}} {{this.docEffect}}>
-      <div class='row justify-content-center'><div
+    <div
+      class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'
+      {{this.hashEffect}}
+      {{this.docEffect}}
+    >
+      <div class='mx-auto max-w-3xl'><div
           class='col-12 col-md-10 col-lg-8 bg-white pb-5 rounded-3'
         ><div
             class='d-flex flex-column justify-content-center align-items-center py-3'
@@ -234,7 +238,7 @@ export default class App extends Component {
           </Panel>
 
           <div class='mt-3 mb-3 d-grid'><button
-              class='btn btn-lg mb-3'
+              class='rounded w-full bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
               class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
               type='button'
               target='_blank'
@@ -244,7 +248,11 @@ export default class App extends Component {
               {{t.print}}
             </button>
 
-            <a href={{this.fileLink}} class='btn btn-lg btn-dark' download>
+            <a
+              href={{this.fileLink}}
+              class='rounded block text-center w-full bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
+              download
+            >
               {{t.download_assurance_sheet}}
             </a>
           </div></div></div></div>

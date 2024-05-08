@@ -8,13 +8,17 @@ export class RoleList extends Component<{
   };
 }> {
   <template>
-    <li class='list-group-item'><div class='row'><div
-          class='col-12 col-md-5 col-lg-6 d-flex align-items-center fw-bold'
-        >{{@user.role}}</div><div
-          class='col-12 col-md-7 col-lg-6 d-flex flex-column flex-md-row align-items-stretch align-items-md-center justify-content-md-between'
-        ><span>{{@user.lastName}}</span><div class='d-grid mt-2 mt-md-0'><button
-              class='btn btn-light text-danger fw-bold'
-              {{on 'click' (fn @onRemove @user)}}
-            >×</button></div></div></div></li>
+    <li class='py-2'>
+      <div class='flex justify-between'>
+        <div class='flex-auto px-4 w-2/5'>{{@user.role}}</div>
+        <div class='flex-auto px-4 w-2/5'>{{@user.lastName}}</div>
+        <div class='flex-auto px-4'>
+          <button
+            class='bg-red-100 w-8 rounded text-gray shadow border-2 border-red-200 text-center'
+            {{on 'click' (fn @onRemove @user)}}
+          >×</button>
+        </div>
+      </div>
+    </li>
   </template>
 }

@@ -10,7 +10,11 @@ export class Label extends Component<{
   };
 }> {
   <template>
-    <label class='w-full h-6 text-gray-600' for={{@for}} ...attributes>{{yield}}
+    <label
+      class='block text-sm font-medium leading-6 text-gray-900'
+      for={{@for}}
+      ...attributes
+    >{{yield}}
     </label>
   </template>
 }
