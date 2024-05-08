@@ -238,7 +238,7 @@ export default class App extends Component {
           </Panel>
 
           <div class='mt-3 mb-3'><button
-              class='rounded w-full bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+              class='rounded w-full bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
               class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
               type='button'
               target='_blank'
@@ -250,7 +250,7 @@ export default class App extends Component {
 
             <a
               href={{this.fileLink}}
-              class='rounded block text-center w-full bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
+              class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
               download
             >
               {{t.download_assurance_sheet}}
