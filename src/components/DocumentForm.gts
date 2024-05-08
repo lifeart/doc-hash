@@ -55,6 +55,9 @@ export class DocumentForm extends Component<{
           <Label @for='version'>{{t.version}}:</Label>
           <Input
             type='number'
+            min='1'
+            max='9999'
+            step='1'
             id='version'
             @value={{@version}}
             class={{if (not @version) 'border-danger' ''}}
@@ -67,6 +70,9 @@ export class DocumentForm extends Component<{
 
           <Input
             type='number'
+            min='1'
+            max='9999'
+            step='1'
             class={{if (not @last_change_number) 'border-danger' ''}}
             id='last_change_number'
             @value={{@last_change_number}}

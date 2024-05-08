@@ -3,8 +3,8 @@ import { t, type User } from './constants';
 type AssuranceSheetData = {
   documentDesignation: string;
   productName: string;
-  version: number;
-  lastChangeNumber: number;
+  version: number | string;
+  lastChangeNumber: number | string;
   hashFunction: string;
   hashValue: string;
   fileName: string;
@@ -58,52 +58,71 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     const table = new Table({
       columnWidths: [1260, 2520, 3780, 2520, 1260],
       rows: [
-        createContentRow(
-          t.serial_number,
-          t.document_designation,
-          t.product_name,
-          t.version,
-          t.last_change_number,
-        ),
-        createContentRow(
-          '',
-          data.documentDesignation,
-          data.productName,
-          data.version,
-          data.lastChangeNumber,
-        ),
-        createContentRow('', '', data.hashFunction, data.hashValue, ''),
+        createRow([
+          { label: t.serial_number },
+          { label: t.document_designation },
+          { label: t.product_name },
+          { label: t.version },
+          { label: t.last_change_number },
+        ]),
+        createRow([
+          { label: '' },
+          { label: data.documentDesignation },
+          { label: data.productName },
+          { label: String(data.version) },
+          { label: String(data.lastChangeNumber) },
+        ]),
+        createRow([
+          {
+            label: data.hashFunction,
+            colSpan: 2,
+          },
+          {
+            label: data.hashValue,
+            colSpan: 3,
+          },
+        ]),
         createSpacingRow(),
-        createContentRow(
-          '',
-          '',
-          t.file_name,
-          t.last_modified,
-          t.file_size,
-        ),
-        createContentRow(
-          '',
-          '',
-          data.fileName,
-          data.lastModified,
-          data.fileSize,
-        ),
+        createRow([
+          {
+            label: t.file_name,
+            colSpan: 2,
+          },
+          {
+            label: t.last_modified,
+            colSpan: 2,
+          },
+          {
+            label: t.file_size,
+          },
+        ]),
+        createRow([
+          {
+            label: data.fileName,
+            colSpan: 2,
+          },
+          {
+            label: data.lastModified,
+            colSpan: 2,
+          },
+          {
+            label: String(data.fileSize),
+          },
+        ]),
         createSpacingRow(),
-        createContentRow(
-          '',
-          t.work_type,
-          t.full_name,
-          t.signature,
-          t.signing_date,
-        ),
-        ...data.users.map((user, index) =>
-          createContentRow(
-            (index + 1).toString(),
-            user.role,
-            user.lastName,
-            '',
-            '',
-          ),
+        createRow([
+          { label: t.work_type, colSpan: 2 },
+          { label: t.full_name },
+          { label: t.signature },
+          { label: t.signing_date },
+        ]),
+        ...data.users.map((user) =>
+          createRow([
+            { label: user.role, colSpan: 2 },
+            { label: user.lastName },
+            { label: '' },
+            { label: '' },
+          ]),
         ),
       ],
       width: {
@@ -143,48 +162,35 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     });
   }
 
-  function createContentRow(
-    index: string,
-    leftLabel: string,
-    leftContent: string,
-    rightLabel: string,
-    rightContent: string,
+  function createRow(
+    cells: Array<{
+      label: string;
+      colSpan?: number;
+      alignment?: keyof typeof AlignmentType;
+    }>,
   ) {
     return new TableRow({
-      children: [
-        new TableCell({
+      children: cells.map((cell) => {
+        return new TableCell({
           children: [
-            new Paragraph({ text: index, alignment: AlignmentType.CENTER }),
+            new Paragraph({
+              text: cell.label,
+            }),
           ],
+          columnSpan: cell.colSpan,
           verticalAlign: VerticalAlign.CENTER,
-        }),
-        new TableCell({
-          children: [new Paragraph(leftLabel)],
-          verticalAlign: VerticalAlign.CENTER,
-        }),
-        new TableCell({
-          children: [new Paragraph(leftContent)],
-          verticalAlign: VerticalAlign.CENTER,
-        }),
-        new TableCell({
-          children: [new Paragraph(rightLabel)],
-          verticalAlign: VerticalAlign.CENTER,
-        }),
-        new TableCell({
-          children: [new Paragraph(rightContent)],
-          verticalAlign: VerticalAlign.CENTER,
-        }),
-      ],
+        });
+      }),
     });
   }
 
   const DocXBlob = await Packer.toBlob(document);
 
-  const reader = new FileReader()
-    
-  await new Promise(resolve => {
-      reader.onloadend = resolve
-      reader.readAsDataURL(DocXBlob);
+  const reader = new FileReader();
+
+  await new Promise((resolve) => {
+    reader.onloadend = resolve;
+    reader.readAsDataURL(DocXBlob);
   });
 
   return reader.result as string;

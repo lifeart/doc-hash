@@ -13,7 +13,7 @@ export class Panel extends Component<{
     <div class='bg-white shadow sm:rounded-lg' ...attributes>
       <div class='px-3 py-3 sm:p-3'>
         <h3
-          class='text-base font-semibold leading-6 text-gray-900'
+          class='pl-4 text-base font-semibold leading-6 text-gray-900'
         >{{@title}}</h3>
         <div class='mt-2'>
           {{yield}}
