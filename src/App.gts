@@ -67,24 +67,7 @@ export default class App extends Component {
     this.fileHash = hash;
     write('fileHash', hash);
   };
-  hashEffect = (_: HTMLDivElement) => {
-    return effect(() => {
-      const algo = this.selectedAlgo;
-      const file = this.file;
 
-      if (file) {
-        getHash(file, algo).then((hash) => {
-          this.setFileHash(hash);
-        });
-      } else {
-        new Promise((resolve) => {
-          resolve('');
-        }).then(() => {
-          this.setFileHash('');
-        });
-      }
-    });
-  };
   get isFormInvalid() {
     return (
       !this.designation ||
@@ -110,6 +93,10 @@ export default class App extends Component {
         })
       : '';
   }
+  setFileLink = (link: string) => {
+    this.fileLink = link;
+    write('fileLink', link);
+  };
   onPrint = () => {
     // create new window and render Print component to it
     const win = window.open('', 'printwindow');
@@ -151,15 +138,7 @@ export default class App extends Component {
       fileSize: this.fileSize,
       users: this.users,
     }).then((link) => {
-      this.fileLink = link;
-      write('fileLink', link);
-    });
-  };
-  docEffect = (_: HTMLDivElement) => {
-    return effect(() => {
-      if (!this.isFormInvalid) {
-        this.generateDocument();
-      }
+      this.setFileLink(link);
     });
   };
   get docFileName() {
@@ -168,12 +147,36 @@ export default class App extends Component {
     const lastChangeNumber = this.lastChangeNumber;
     return `${t.iul}__${fileName}__v.${fileVersion}.${lastChangeNumber}.docx`;
   }
+  cleanup = (_: HTMLDivElement) => {
+    return () => {
+      this.effects.forEach((destructor) => {
+        destructor();
+      });
+    };
+  };
+  effects = [
+    effect(() => {
+      if (!this.isFormInvalid) {
+        this.generateDocument();
+      } else {
+        this.setFileLink('');
+      }
+    }),
+    effect(() => {
+      const algo = this.selectedAlgo;
+      const file = this.file;
+
+      if (file) {
+        getHash(file, algo).then((hash) => {
+          this.setFileHash(hash);
+        });
+      } else {
+        this.setFileHash('');
+      }
+    }),
+  ];
   <template>
-    <div
-      class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'
-      {{this.hashEffect}}
-      {{this.docEffect}}
-    >
+    <div class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8' {{this.cleanup}}>
       <div class='mx-auto max-w-3xl'>
         <div class='pb-5'>
           <div class='py-3'>
