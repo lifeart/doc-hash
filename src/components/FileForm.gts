@@ -1,5 +1,6 @@
 import { Component } from '@lifeart/gxt';
 import { t } from './../utils/constants';
+import { Input } from './Input';
 
 export class FileForm extends Component<{
   Args: {
@@ -17,11 +18,11 @@ export class FileForm extends Component<{
   <template>
     <div>
       <div class='mt-3'>
-        <input
+        <Input
           type='file'
-          class='form-control'
           id='filePz'
           {{on 'change' this.onFileChange}}
+          @value={{''}}
         />
       </div>
       <div class='mt-4 d-flex flex-column align-items-start'>

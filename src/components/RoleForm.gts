@@ -1,6 +1,8 @@
 import { Component, tracked } from '@lifeart/gxt';
 import { roles, t, type User } from './../utils/constants';
 import { RoleList } from './RoleList';
+import { Input } from './Input';
+
 export class RoleForm extends Component<{
   Args: {
     users: Array<User>;
@@ -42,14 +44,13 @@ export class RoleForm extends Component<{
       </ul>
 
       {{! ROLE LIST }}
-      <div class='bg-blue-100 p-3 rounded'>
+      <div class='p-3 rounded'>
         <form class='card-body' {{on 'submit' this.onAdd}}>
-          <div class='row g-2'>
-            <div class='col-12 col-md-5'>
-              <input
+          <div class='flex flex-row gap-2'>
+            <div class='flex-col w-1/3'>
+              <Input
                 type='text'
                 placeholder={{t.role}}
-                class='form-control'
                 class={{if
                   (not this.role.length)
                   'border-orange-200'
@@ -57,7 +58,7 @@ export class RoleForm extends Component<{
                 }}
                 list='roles_list'
                 id='roles-list'
-                value={{this.role}}
+                @value={{this.role}}
                 required={{true}}
                 {{on 'input' this.setRole}}
               />
@@ -67,8 +68,8 @@ export class RoleForm extends Component<{
                 {{/each}}
               </datalist>
             </div>
-            <div class='col-12 col-md-5'>
-              <input
+            <div class='flex-col w-1/3'>
+              <Input
                 type='text'
                 placeholder={{t.surname}}
                 class={{if
@@ -76,16 +77,15 @@ export class RoleForm extends Component<{
                   'border-orange-200'
                   'border-blue-400'
                 }}
-                class='form-control'
-                value={{this.lastName}}
+                @value={{this.lastName}}
                 required={{true}}
                 {{on 'input' this.setLastName}}
               />
             </div>
-            <div class='col-12 col-md-2'>
+            <div class='flex-col w-1/3'>
               <div class='d-grid'>
                 <button
-                  class='btn'
+                  class='bg-blue-500 border-2 border-blue-700 hover:bg-indigo-700 text-white font-bold p-2 rounded shadow-sm cursor-pointer transition duration-300 ease-in-out'
                   class={{if this.isFormInvalid 'btn-secondary' 'btn-primary'}}
                   type='submit'
                 >{{t.add}}</button>
