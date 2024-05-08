@@ -217,7 +217,7 @@ export default class App extends Component {
           </Panel>
 
           <Panel @title={{t.preview}} class='mt-4 pb-6'>
-            <div shadowrootmode='open'>
+            <div shadowrootmode='open' style.font-size='12px'>
               <Print
                 @lastChangeNumber={{this.lastChangeNumber}}
                 @version={{this.version}}
