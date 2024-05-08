@@ -69,13 +69,11 @@ export default class App extends Component {
   };
   hashEffect = (_: HTMLDivElement) => {
     return effect(() => {
-      console.log('hashEffect');
       const algo = this.selectedAlgo;
       const file = this.file;
 
       if (file) {
         getHash(file, algo).then((hash) => {
-          console.log('hash', hash);
           this.setFileHash(hash);
         });
       } else {
@@ -153,14 +151,12 @@ export default class App extends Component {
       fileSize: this.fileSize,
       users: this.users,
     }).then((link) => {
-      console.log('link', link);
       this.fileLink = link;
       write('fileLink', link);
     });
   };
   docEffect = (_: HTMLDivElement) => {
     return effect(() => {
-      console.log('docEffect');
       if (!this.isFormInvalid) {
         this.generateDocument();
       }
