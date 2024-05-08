@@ -84,7 +84,7 @@ export class RoleForm extends Component<{
           <div class='flex-col w-1/5 px-4'>
             <div class='d-grid'>
               <button
-                class='bg-blue-500 border-2 border-blue-700 hover:bg-indigo-700 text-white font-bold p-2 rounded shadow-sm cursor-pointer transition duration-300 ease-in-out'
+                class='rounded bg-white p-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
                 class={{if this.isFormInvalid 'btn-secondary' 'btn-primary'}}
                 type='submit'
               >{{t.add}}</button>

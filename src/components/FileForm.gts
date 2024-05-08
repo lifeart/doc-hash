@@ -17,8 +17,8 @@ export class FileForm extends Component<{
     this.args.onFileSelect(file ?? null);
   };
   <template>
-    <div>
-      <div class='mt-3'>
+    <div class='p-3'>
+      <div class='mt-0'>
         <Input
           type='file'
           id='filePz'
@@ -26,7 +26,7 @@ export class FileForm extends Component<{
           @value={{''}}
         />
       </div>
-      <div class='mt-4 d-flex flex-column align-items-start'>
+      <div class='mt-6 d-flex flex-column align-items-start'>
         <Label @for=''>{{t.checksum_calculation_algorithm}}:</Label>
         {{yield}}
       </div>
