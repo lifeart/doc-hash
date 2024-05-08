@@ -27,7 +27,7 @@ export class Algorithms extends Component<{
       {{#each this.items as |alg|}}
         <button
           class={{if (eq alg.value @selected) 'bg-blue-200' 'bg-white'}}
-          class='relative inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-blue-500 focus:z-10'
+          class='relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-blue-500 focus:z-10'
           class={{alg.class}}
           {{on 'click' (fn @onSelect alg.value)}}
         >

@@ -169,17 +169,14 @@ export default class App extends Component {
   <template>
     <div
       class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'
+      style='background-color: #3498db'
       {{this.hashEffect}}
       {{this.docEffect}}
     >
-      <div class='mx-auto max-w-3xl'><div
-          class='col-12 col-md-10 col-lg-8 bg-white pb-5 rounded-3'
-        ><div
-            class='d-flex flex-column justify-content-center align-items-center py-3'
-          ><h1
-              class='text-center py-3'
-              style='font-size: 16px; font-weight: 500;'
-            >{{t.title}}
+      <div class='mx-auto max-w-3xl'>
+        <div class='pb-5'>
+          <div class='py-3'>
+            <h1 class='text-center py-3 text-gray-100 text-shadow'>{{t.title}}
             </h1></div>
 
           <Panel @title={{t.document}}>
@@ -218,7 +215,7 @@ export default class App extends Component {
             />
           </Panel>
 
-          <Panel @title={{t.preview}} class='mt-4'>
+          <Panel @title={{t.preview}} class='mt-4 pb-6'>
             <div shadowrootmode='open'>
               <Print
                 @last_change_number={{this.last_change_number}}

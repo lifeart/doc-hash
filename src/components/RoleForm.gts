@@ -34,7 +34,7 @@ export class RoleForm extends Component<{
     <div>
       {{#if (not @users.length)}}
         <div
-          class='alert alert-warning mt-4'
+          class='mt-4 ml-4 text-orange-500'
         >{{t.specify_role_and_surname}}</div>
       {{/if}}
       <ul role='list' class='divide-y divide-gray-200'>
