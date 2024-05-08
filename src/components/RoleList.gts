@@ -10,8 +10,8 @@ export class RoleList extends Component<{
   <template>
     <li class='py-2'>
       <div class='flex justify-between'>
-        <div class='flex-auto px-4 w-2/5'>{{@user.role}}</div>
-        <div class='flex-auto px-4 w-2/5'>{{@user.lastName}}</div>
+        <div class='flex-auto pr-4 w-2/5'>{{@user.role}}</div>
+        <div class='flex-auto pr-4 w-2/5'>{{@user.lastName}}</div>
         <div class='flex-auto px-4'>
           <button
             class='hover:bg-red-100 w-8 rounded text-gray hover:shadow border-2 hover:border-red-200 text-center'
