@@ -21,7 +21,7 @@ export class FileForm extends Component<{
       <div class='mt-0'>
         <Input
           type='file'
-          id='filePz'
+          id='file'
           {{on 'change' this.onFileChange}}
           @value={{''}}
         />

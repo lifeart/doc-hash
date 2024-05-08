@@ -39,9 +39,9 @@ export class DocumentForm extends Component<{
 
       <div class='flex'>
         <div class='flex-auto p-4'>
-          <Label @for='document_name'>{{t.document_name}}:</Label>
+          <Label @for='document-name'>{{t.document_name}}:</Label>
           <textarea
-            id='document_name'
+            id='document-name'
             value={{@documentName}}
             class='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
             class={{if (not @documentName.length) 'border-danger' ''}}
@@ -67,7 +67,7 @@ export class DocumentForm extends Component<{
         </div>
 
         <div class='flex-auto p-4'>
-          <Label @for='last_change_number'>{{t.last_change_number}}:</Label>
+          <Label @for='last-change-number'>{{t.last_change_number}}:</Label>
 
           <Input
             type='number'
@@ -75,7 +75,7 @@ export class DocumentForm extends Component<{
             max='9999'
             step='1'
             class={{if (not @lastChangeNumber) 'border-danger' ''}}
-            id='last_change_number'
+            id='last-change-number'
             @value={{@lastChangeNumber}}
             {{on 'input' (fn this.onChange 'lastChangeNumber')}}
           />
