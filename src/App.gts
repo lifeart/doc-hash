@@ -195,8 +195,8 @@ export default class App extends Component {
           <Panel @title={{t.file}} class='mt-4'>
             <FileForm @onFileSelect={{this.onFileSelect}}>
               <div class='container'>
-                <div class='row'>
-                  <div class='col-4'>
+                <div class='flex justify-start'>
+                  <div class='pr-4'>
                     <Algorithms
                       @selected={{this.selectedAlgo}}
                       @onSelect={{this.selectAlgo}}
