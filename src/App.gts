@@ -16,9 +16,15 @@ import {
 import { createAssuranceSheet } from '@/utils/document-creator';
 import { read, write } from '@/utils/persisted';
 import { t } from '@/utils/t';
+import { concat } from '@/utils/helpers';
+import { addFilesToDto, FileDTO, removeFile } from './utils/file-manager';
 
 export default class App extends Component {
   @tracked selectedAlgo = read('algo', algos[0].value) as AlgorithmType;
+  get selectedAlgoName() {
+    const active = this.selectedAlgo;
+    return algos.find((algo) => active === algo.value)!.label;
+  }
   @tracked
   users: User[] = JSON.parse(
     read(
@@ -43,10 +49,16 @@ export default class App extends Component {
   fileHash: string = read('fileHash', '');
   @tracked
   fileLink: string = read('fileLink', '');
-  onDocumentFieldChange = (field: DocumentField, value: string | number) => {
+  @tracked
+  models: FileDTO[] = [];
+  onDocumentFieldChange = (
+    dto: FileDTO,
+    field: DocumentField,
+    value: string | number,
+  ) => {
     // @ts-expect-error value is string | number
-    this[field] = value;
-    write(field, String(value));
+    dto[field] = value;
+    this.saveModel(dto);
   };
   selectAlgo = (name: AlgorithmType) => {
     this.selectedAlgo = name;
@@ -60,8 +72,8 @@ export default class App extends Component {
     this.users = [...this.users, user];
     write('users', this.users);
   };
-  onFileSelect = (file: File | null) => {
-    this.file = file;
+  onFileSelect = (fileList: FileList) => {
+    this.models = addFilesToDto(fileList);
   };
   setFileHash = (hash: string) => {
     this.fileHash = hash;
@@ -70,14 +82,12 @@ export default class App extends Component {
 
   get isFormInvalid() {
     return (
-      !this.designation ||
-      !this.documentName ||
-      !this.file ||
-      !this.fileHash ||
+      !this.models.length ||
       !this.users.length ||
-      !this.version ||
-      !this.lastChangeNumber ||
-      !this.selectedAlgo
+      !this.selectedAlgo ||
+      this.models.some((model) => {
+        return model.isInvalid;
+      })
     );
   }
   get fileName() {
@@ -86,13 +96,9 @@ export default class App extends Component {
   get fileSize() {
     return this.file?.size ?? '';
   }
-  get fileLastModified() {
-    return this.file?.lastModified
-      ? new Date(this.file.lastModified).toLocaleString('ru-RU', {
-          timeZone: 'Europe/Moscow',
-        })
-      : '';
-  }
+  onRemoveFile = (model: FileDTO) => {
+    this.models = removeFile(model);
+  };
   setFileLink = (link: string) => {
     this.fileLink = link;
     write('fileLink', link);
@@ -103,16 +109,8 @@ export default class App extends Component {
     if (!win) return;
     renderComponent(
       new Print({
-        lastChangeNumber: this.lastChangeNumber,
-        version: this.version,
-        documentName: this.documentName,
-        designation: this.designation,
-        fileHash: this.fileHash,
-        selectedAlgo: this.selectedAlgo,
-        fileName: this.fileName,
-        fileSize: this.fileSize,
-        // 20.11.2023 00:11:28
-        fileLastModified: this.fileLastModified,
+        selectedAlgo: this.selectedAlgoName,
+        files: this.models,
         users: this.users,
       }) as any,
       win.document.body,
@@ -127,25 +125,18 @@ export default class App extends Component {
   };
   generateDocument = () => {
     createAssuranceSheet({
-      documentDesignation: this.designation,
-      productName: this.documentName,
-      version: this.version,
-      lastChangeNumber: this.lastChangeNumber,
-      hashValue: this.fileHash,
-      hashFunction: this.selectedAlgo,
-      fileName: this.fileName,
-      lastModified: this.fileLastModified,
-      fileSize: this.fileSize,
+      hashFunction: this.selectedAlgoName,
       users: this.users,
+      files: this.models,
     }).then((link) => {
       this.setFileLink(link);
     });
   };
   get docFileName() {
-    const fileName = this.fileName.split(' ').join('_');
-    const fileVersion = this.version;
-    const lastChangeNumber = this.lastChangeNumber;
-    return `${t.iul}__${fileName}__v.${fileVersion}.${lastChangeNumber}.docx`;
+    const totalFileSize = this.models.reduce((acc, item) => {
+      return acc + item.fileSize;
+    }, 0);
+    return `${t.iul}__${totalFileSize}bytes.docx`;
   }
   cleanup = (_: HTMLDivElement) => {
     return () => {
@@ -154,6 +145,33 @@ export default class App extends Component {
       });
     };
   };
+  async calcFileHashes(models: FileDTO[], algo: AlgorithmType) {
+    for (let model of models) {
+      const file = model.file;
+      if (!file) {
+        continue;
+      }
+      const hash = await getHash(file, algo);
+      model.hash = hash;
+    }
+    this.persistFiles();
+  }
+  saveModel(model: FileDTO) {
+    write(
+      model.key,
+      JSON.stringify({
+        designation: model.designation,
+        documentName: model.documentName,
+        version: model.version,
+        lastChangeNumber: model.lastChangeNumber,
+      }),
+    );
+  }
+  persistFiles() {
+    for (const model of this.models) {
+      this.saveModel(model);
+    }
+  }
   effects = [
     effect(() => {
       if (!this.isFormInvalid) {
@@ -164,15 +182,8 @@ export default class App extends Component {
     }),
     effect(() => {
       const algo = this.selectedAlgo;
-      const file = this.file;
-
-      if (file) {
-        getHash(file, algo).then((hash) => {
-          this.setFileHash(hash);
-        });
-      } else {
-        this.setFileHash('');
-      }
+      const models = this.models;
+      this.calcFileHashes(models, algo);
     }),
   ];
   <template>
@@ -182,16 +193,6 @@ export default class App extends Component {
           <div class='py-3'>
             <h1 class='text-center py-3 text-gray-100 text-shadow'>{{t.title}}
             </h1></div>
-
-          <Panel @title={{t.document}}>
-            <DocumentForm
-              @designation={{this.designation}}
-              @documentName={{this.documentName}}
-              @version={{this.version}}
-              @lastChangeNumber={{this.lastChangeNumber}}
-              @onChange={{this.onDocumentFieldChange}}
-            />
-          </Panel>
 
           <Panel @title={{t.file}} class='mt-4'>
             <FileForm @onFileSelect={{this.onFileSelect}}>
@@ -211,6 +212,22 @@ export default class App extends Component {
             </FileForm>
           </Panel>
 
+          {{#each this.models as |file|}}
+            <Panel
+              class='mt-2'
+              @title={{concat t.document file.fileName}}
+              @onRemove={{fn this.onRemoveFile file}}
+            >
+              <DocumentForm
+                @designation={{file.designation}}
+                @documentName={{file.documentName}}
+                @version={{file.version}}
+                @lastChangeNumber={{file.lastChangeNumber}}
+                @onChange={{fn this.onDocumentFieldChange file}}
+              />
+            </Panel>
+          {{/each}}
+
           <Panel @title={{t.project_roles}} class='mt-4'>
             <RoleForm
               @users={{this.users}}
@@ -222,16 +239,9 @@ export default class App extends Component {
           <Panel @title={{t.preview}} class='mt-4 pb-6'>
             <div shadowrootmode='open' style.font-size='12px'>
               <Print
-                @lastChangeNumber={{this.lastChangeNumber}}
-                @version={{this.version}}
-                @documentName={{this.documentName}}
-                @designation={{this.designation}}
-                @fileHash={{this.fileHash}}
-                @selectedAlgo={{this.selectedAlgo}}
-                @fileName={{this.fileName}}
-                @fileSize={{this.fileSize}}
-                @fileLastModified={{this.fileLastModified}}
+                @files={{this.models}}
                 @users={{this.users}}
+                @selectedAlgo={{this.selectedAlgoName}}
                 @hidePrintButton={{true}}
               />
             </div>
@@ -249,13 +259,15 @@ export default class App extends Component {
               {{t.print}}
             </button>
 
-            <a
-              href={{this.fileLink}}
-              class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
-              download={{this.docFileName}}
-            >
-              {{t.download_assurance_sheet}}
-            </a>
+            {{#if this.fileLink}}
+              <a
+                href={{this.fileLink}}
+                class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
+                download={{this.docFileName}}
+              >
+                {{t.download_assurance_sheet}}
+              </a>
+            {{/if}}
           </div></div></div></div>
   </template>
 }

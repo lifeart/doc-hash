@@ -1,17 +1,11 @@
 import { type User } from './constants';
+import { FileDTO } from './file-manager';
 import { t } from './t';
 
 type AssuranceSheetData = {
-  documentDesignation: string;
-  productName: string;
-  version: number | string;
-  lastChangeNumber: number | string;
   hashFunction: string;
-  hashValue: string;
-  fileName: string;
-  lastModified: string;
-  fileSize: string | number;
   users: User[];
+  files: FileDTO[];
 };
 
 export async function createAssuranceSheet(data: AssuranceSheetData) {
@@ -56,9 +50,9 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
   });
 
   function createAssuranceTable(data: AssuranceSheetData) {
-    const table = new Table({
-      columnWidths: [1260, 2520, 3780, 2520, 1260],
-      rows: [
+    const rows: any[] = [];
+    data.files.forEach((model: FileDTO) => {
+      const fileRows = [
         createRow([
           { label: t.serial_number },
           { label: t.document_designation },
@@ -68,10 +62,10 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         ]),
         createRow([
           { label: '' },
-          { label: data.documentDesignation },
-          { label: data.productName },
-          { label: String(data.version) },
-          { label: String(data.lastChangeNumber) },
+          { label: model.designation },
+          { label: model.documentName },
+          { label: String(model.version) },
+          { label: String(model.lastChangeNumber) },
         ]),
         createRow([
           {
@@ -79,7 +73,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
             colSpan: 2,
           },
           {
-            label: data.hashValue,
+            label: model.hash,
             colSpan: 3,
           },
         ]),
@@ -99,17 +93,26 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         ]),
         createRow([
           {
-            label: data.fileName,
+            label: model.fileName,
             colSpan: 2,
           },
           {
-            label: data.lastModified,
+            label: model.fileLastModified,
             colSpan: 2,
           },
           {
-            label: String(data.fileSize),
+            label: String(model.fileSize),
           },
-        ]),
+        ])
+      ];
+      fileRows.forEach((row) => {
+        rows.push(row);
+      });
+    })
+    const table = new Table({
+      columnWidths: [1260, 2520, 3780, 2520, 1260],
+      rows: [
+        ...rows,
         createSpacingRow(),
         createRow([
           { label: t.work_type, colSpan: 2 },
