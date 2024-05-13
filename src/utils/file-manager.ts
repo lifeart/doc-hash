@@ -3,8 +3,17 @@ import { read, remove } from './persisted';
 
 const fileSet: Set<FileDTO> = new Set();
 
+function keyForFile(file: File) {
+  return `${file.name}_${file.size}_${file.lastModified}`;
+}
+
 export function addFilesToDto(files: FileList) {
+  const existingFiles = Array.from(fileSet);
   for (let file of files) {
+    const key = keyForFile(file);
+    if (existingFiles.some((el) => el.key === key)) {
+      continue;
+    }
     const model = new FileDTO(file);
     fileSet.add(model);
   }
@@ -51,7 +60,7 @@ export class FileDTO {
     );
   }
   constructor(file: File) {
-    const key = `${file.name}_${file.size}_${file.lastModified}`;
+    const key = keyForFile(file);
     this.key = key;
     this.fileName = file.name;
     this.fileSize = file.size;
