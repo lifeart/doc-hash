@@ -2,7 +2,7 @@ import { DocumentField } from "./constants";
 
 const storageKey = `doc-hash-persisted`;
 
-type StorageKey = 'fileHash' | 'algo' | 'fileLink' | 'designation' | 'documentName' | 'version' | 'lastChangeNumber' | 'users' | DocumentField;
+type StorageKey = string | 'fileHash' | 'algo' | 'fileLink' | 'designation' | 'documentName' | 'version' | 'lastChangeNumber' | 'users' | DocumentField;
 
 export function read(key: StorageKey, defaultValue: string): string {
   const accessKey = `${storageKey}/${key}`;
@@ -20,4 +20,14 @@ export function write(key: StorageKey, rawValue: string | object) {
   } catch (e) {
     // OOPS
   }
+}
+export function remove(key: StorageKey) {
+  
+  const accessKey = `${storageKey}/${key}`;
+  try {
+    localStorage.removeItem(accessKey);
+  } catch(e) {
+    // OOPS
+  }
+  return;
 }
