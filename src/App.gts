@@ -145,9 +145,6 @@ export default class App extends Component {
       })
       .replace(',', '_')}_${totalFileSize}b.docx`;
   }
-  get currentDateTime() {
-    return;
-  }
   cleanup = (_: HTMLDivElement) => {
     return () => {
       this.effects.forEach((destructor) => {
