@@ -131,7 +131,22 @@ export class Print extends Component<{
             <td colspan='2'>&nbsp;</td>
           </tr>
         {{/each}}
+        <tr style='break-inside: avoid; break-after: avoid;'>
+          <td colspan='7' style='padding: 2px'>
+            &nbsp;
+          </td>
+        </tr>
+        <tr style='break-inside: avoid; break-after: auto;'>
+          <td colspan='2' rowspan='2'>{{t.assurance_sheet}}</td>
+          <td colspan='3' rowspan='2'>{{@doc.designation}} {{t.u_l}}</td>
 
+          <td rowspan='1'>{{t.sheet}}</td>
+          <td rowspan='1'>{{t.sheets}}</td>
+        </tr>
+        <tr style='break-inside: avoid; break-after: auto;'>
+          <td rowspan='1'>&nbsp;</td>
+          <td rowspan='1'>&nbsp;</td>
+        </tr>
       </table>
     </div>
   </template>

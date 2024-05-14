@@ -72,7 +72,9 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         label: data.files.length === 1 ? data.files[0].hash : '',
         colSpan: 3,
       },
-    ]), createRow([
+    ])];
+
+    const fileHeadingRow = [
       {
         label: t.file_name,
         colSpan: 2,
@@ -84,7 +86,16 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       {
         label: t.file_size,
       },
-    ]),];
+    ];
+    if (data.files.length > 1) {
+      fileHeadingRow[1].colSpan = 1;
+      fileHeadingRow.push({
+        label: t.checksum_value,
+      });
+    }
+
+    rows.push(createRow(fileHeadingRow));
+
     data.files.forEach((model: FileDTO) => {
       const rowContent = [
         {
@@ -96,10 +107,11 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
           colSpan: 2,
         },
         {
-          label: String(model.fileSize),
+          label: model.formattedSize,
         },
       ];
       if (data.files.length > 1) {
+        rowContent[1].colSpan = 1;
         rowContent.push({
           label: model.hash,
         });
@@ -129,6 +141,17 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
             { label: '' },
           ]),
         ),
+        createSpacingRow(),
+        createRow([
+          { rowSpan: 2, label: t.assurance_sheet },
+          { colSpan: 2, rowSpan: 2, label: `${t.u_l} ${data.doc.designation}` },
+          { rowSpan: 1, label: t.sheet },
+          { rowSpan: 1, label: t.sheets },
+        ]),
+        createRow([
+          { rowSpan: 1, label: '' },
+          { rowSpan: 1, label: '' },
+        ])
       ],
       width: {
         size: 100,
@@ -147,30 +170,31 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     return table;
   }
 
-  // function createSpacingRow() {
-  //   return new TableRow({
-  //     children: [
-  //       new TableCell({
-  //         borders: {
-  //           left: { size: 0, style: BorderStyle.SINGLE },
-  //           right: { size: 0, style: BorderStyle.SINGLE },
-  //         },
-  //         children: [new Paragraph('')],
-  //         columnSpan: 5,
-  //         shading: {
-  //           type: ShadingType.SOLID,
-  //           color: 'CCCCCC',
-  //         },
-  //         verticalAlign: VerticalAlign.CENTER,
-  //       }),
-  //     ],
-  //   });
-  // }
+  function createSpacingRow() {
+    return new TableRow({
+      children: [
+        new TableCell({
+          borders: {
+            left: { size: 0, style: BorderStyle.SINGLE },
+            right: { size: 0, style: BorderStyle.SINGLE },
+          },
+          children: [new Paragraph('')],
+          columnSpan: 5,
+          // shading: {
+          //   type: ShadingType.SOLID,
+          //   color: 'CCCCCC',
+          // },
+          verticalAlign: VerticalAlign.CENTER,
+        }),
+      ],
+    });
+  }
 
   function createRow(
     cells: Array<{
       label: string;
       colSpan?: number;
+      rowSpan?: number;
       alignment?: keyof typeof AlignmentType;
     }>,
   ) {
@@ -183,6 +207,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
             }),
           ],
           columnSpan: cell.colSpan,
+          rowSpan: cell.rowSpan,
           verticalAlign: VerticalAlign.CENTER,
         });
       }),
