@@ -34,10 +34,12 @@ export class Panel extends Component<{
           {{/if}}
 
         </h3>
-        {{#if this.isExpanded}}
-          <div class='mt-2'>
-            {{yield}}
-          </div>
+        {{#if (has-block 'default')}}
+          {{#if this.isExpanded}}
+            <div class='mt-2'>
+              {{yield}}
+            </div>
+          {{/if}}
         {{/if}}
       </div>
     </div>

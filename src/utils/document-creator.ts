@@ -5,6 +5,7 @@ import { t } from './t';
 type AssuranceSheetData = {
   hashFunction: string;
   users: User[];
+  doc: DocumentDTO;
   files: FileDTO[];
 };
 
@@ -50,60 +51,61 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
   });
 
   function createAssuranceTable(data: AssuranceSheetData) {
-    const rows: any[] = [];
+    const rows: any[] = [createRow([
+      { label: t.serial_number },
+      { label: t.document_designation },
+      { label: t.product_name },
+      { label: t.version },
+      { label: t.last_change_number },
+    ]), createRow([
+      { label: '' },
+      { label: data.doc.designation },
+      { label: data.doc.documentName },
+      { label: String(data.doc.version) },
+      { label: String(data.doc.lastChangeNumber) },
+    ]), createRow([
+      {
+        label: data.hashFunction,
+        colSpan: 2,
+      },
+      {
+        label: data.files.length === 1 ? data.files[0].hash : '',
+        colSpan: 3,
+      },
+    ]), createRow([
+      {
+        label: t.file_name,
+        colSpan: 2,
+      },
+      {
+        label: t.last_modified,
+        colSpan: 2,
+      },
+      {
+        label: t.file_size,
+      },
+    ]),];
     data.files.forEach((model: FileDTO) => {
+      const rowContent = [
+        {
+          label: model.fileName,
+          colSpan: 2,
+        },
+        {
+          label: model.fileLastModified,
+          colSpan: 2,
+        },
+        {
+          label: String(model.fileSize),
+        },
+      ];
+      if (data.files.length > 1) {
+        rowContent.push({
+          label: model.hash,
+        });
+      }
       const fileRows = [
-        createRow([
-          { label: t.serial_number },
-          { label: t.document_designation },
-          { label: t.product_name },
-          { label: t.version },
-          { label: t.last_change_number },
-        ]),
-        createRow([
-          { label: '' },
-          { label: model.designation },
-          { label: model.documentName },
-          { label: String(model.version) },
-          { label: String(model.lastChangeNumber) },
-        ]),
-        createRow([
-          {
-            label: data.hashFunction,
-            colSpan: 2,
-          },
-          {
-            label: model.hash,
-            colSpan: 3,
-          },
-        ]),
-        createRow([
-          {
-            label: t.file_name,
-            colSpan: 2,
-          },
-          {
-            label: t.last_modified,
-            colSpan: 2,
-          },
-          {
-            label: t.file_size,
-          },
-        ]),
-        createRow([
-          {
-            label: model.fileName,
-            colSpan: 2,
-          },
-          {
-            label: model.fileLastModified,
-            colSpan: 2,
-          },
-          {
-            label: String(model.fileSize),
-          },
-        ]),
-        createSpacingRow(),
+        createRow(rowContent),
       ];
       fileRows.forEach((row) => {
         rows.push(row);
@@ -145,25 +147,25 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     return table;
   }
 
-  function createSpacingRow() {
-    return new TableRow({
-      children: [
-        new TableCell({
-          borders: {
-            left: { size: 0, style: BorderStyle.SINGLE },
-            right: { size: 0, style: BorderStyle.SINGLE },
-          },
-          children: [new Paragraph('')],
-          columnSpan: 5,
-          shading: {
-            type: ShadingType.SOLID,
-            color: 'CCCCCC',
-          },
-          verticalAlign: VerticalAlign.CENTER,
-        }),
-      ],
-    });
-  }
+  // function createSpacingRow() {
+  //   return new TableRow({
+  //     children: [
+  //       new TableCell({
+  //         borders: {
+  //           left: { size: 0, style: BorderStyle.SINGLE },
+  //           right: { size: 0, style: BorderStyle.SINGLE },
+  //         },
+  //         children: [new Paragraph('')],
+  //         columnSpan: 5,
+  //         shading: {
+  //           type: ShadingType.SOLID,
+  //           color: 'CCCCCC',
+  //         },
+  //         verticalAlign: VerticalAlign.CENTER,
+  //       }),
+  //     ],
+  //   });
+  // }
 
   function createRow(
     cells: Array<{

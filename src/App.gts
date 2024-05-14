@@ -16,10 +16,15 @@ import {
 import { createAssuranceSheet } from '@/utils/document-creator';
 import { read, write } from '@/utils/persisted';
 import { t } from '@/utils/t';
-import { concat } from '@/utils/helpers';
-import { addFilesToDto, FileDTO, removeFile } from './utils/file-manager';
+import {
+  addFilesToDto,
+  DocumentDTO,
+  FileDTO,
+  removeFile,
+} from './utils/file-manager';
 
 export default class App extends Component {
+  @tracked doc = new DocumentDTO();
   @tracked selectedAlgo = read('algo', algos[0].value) as AlgorithmType;
   get selectedAlgoName() {
     const active = this.selectedAlgo;
@@ -58,7 +63,7 @@ export default class App extends Component {
   ) => {
     // @ts-expect-error value is string | number
     dto[field] = value;
-    this.saveModel(dto);
+    write(field, value as string);
   };
   selectAlgo = (name: AlgorithmType) => {
     this.selectedAlgo = name;
@@ -112,6 +117,7 @@ export default class App extends Component {
       new Print({
         selectedAlgo: this.selectedAlgoName,
         files: this.models,
+        doc: this.doc,
         users: this.users,
       }) as any,
       win.document.body,
@@ -129,6 +135,7 @@ export default class App extends Component {
       hashFunction: this.selectedAlgoName,
       users: this.users,
       files: this.models,
+      doc: this.doc,
     }).then((link) => {
       this.setFileLink(link);
     });
@@ -161,23 +168,6 @@ export default class App extends Component {
       const hash = await getHash(file, algo);
       model.hash = hash;
     }
-    this.persistFiles();
-  }
-  saveModel(model: FileDTO) {
-    write(
-      model.key,
-      JSON.stringify({
-        designation: model.designation,
-        documentName: model.documentName,
-        version: model.version,
-        lastChangeNumber: model.lastChangeNumber,
-      }),
-    );
-  }
-  persistFiles() {
-    for (const model of this.models) {
-      this.saveModel(model);
-    }
   }
   effects = [
     effect(() => {
@@ -200,8 +190,17 @@ export default class App extends Component {
           <div class='py-3'>
             <h1 class='text-center py-3 text-gray-100 text-shadow'>{{t.title}}
             </h1></div>
+          <Panel @title={{t.document}} class='mt-4'>
+            <DocumentForm
+              @designation={{this.doc.designation}}
+              @documentName={{this.doc.documentName}}
+              @version={{this.doc.version}}
+              @lastChangeNumber={{this.doc.lastChangeNumber}}
+              @onChange={{fn this.onDocumentFieldChange this.doc}}
+            />
+          </Panel>
 
-          <Panel @title={{t.file}} class='mt-4'>
+          <Panel @title={{t.files}} class='mt-4'>
             <FileForm @onFileSelect={{this.onFileSelect}}>
               <div class='flex'>
                 <div class='flex-auto'>
@@ -222,17 +221,9 @@ export default class App extends Component {
           {{#each this.models as |file|}}
             <Panel
               class='mt-2'
-              @title={{concat t.document file.fileName}}
+              @title={{file.fileName}}
               @onRemove={{fn this.onRemoveFile file}}
-            >
-              <DocumentForm
-                @designation={{file.designation}}
-                @documentName={{file.documentName}}
-                @version={{file.version}}
-                @lastChangeNumber={{file.lastChangeNumber}}
-                @onChange={{fn this.onDocumentFieldChange file}}
-              />
-            </Panel>
+            />
           {{/each}}
 
           <Panel @title={{t.project_roles}} class='mt-4'>
@@ -248,6 +239,7 @@ export default class App extends Component {
               <Print
                 @files={{this.models}}
                 @users={{this.users}}
+                @doc={{this.doc}}
                 @selectedAlgo={{this.selectedAlgoName}}
                 @hidePrintButton={{true}}
               />

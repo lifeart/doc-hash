@@ -2,7 +2,7 @@ import { DocumentField } from "./constants";
 
 const storageKey = `doc-hash-persisted`;
 
-type StorageKey = string | 'fileHash' | 'algo' | 'fileLink' | 'designation' | 'documentName' | 'version' | 'lastChangeNumber' | 'users' | DocumentField;
+type StorageKey = 'fileHash' | 'algo' | 'fileLink' | 'designation' | 'documentName' | 'version' | 'lastChangeNumber' | 'users' | DocumentField;
 
 export function read(key: StorageKey, defaultValue: string): string {
   const accessKey = `${storageKey}/${key}`;

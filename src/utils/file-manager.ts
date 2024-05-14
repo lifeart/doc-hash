@@ -21,13 +21,12 @@ export function addFilesToDto(files: FileList) {
 }
 
 export function removeFile(file: FileDTO) {
-  remove(file.key);
+  remove(file.key as any);
   fileSet.delete(file);
   return Array.from(fileSet);
 }
 
-export class FileDTO {
-  key: string = '';
+export class DocumentDTO {
   @tracked
   designation: string = '';
   @tracked
@@ -36,6 +35,24 @@ export class FileDTO {
   version: number = 1;
   @tracked
   lastChangeNumber: number = 1;
+  get isInvalid() {
+    return (
+      !this.designation ||
+      !this.documentName ||
+      !this.version ||
+      !this.lastChangeNumber
+    );
+  }
+  constructor() {
+    this.designation = read('designation', '');
+    this.version = parseInt(read('version', '1'));
+    this.documentName = read('documentName', '');
+    this.lastChangeNumber = parseInt(read('lastChangeNumber', '1'));
+  }
+}
+
+export class FileDTO {
+  key: string = '';
   @tracked
   file: null | File = null;
   @tracked
@@ -43,20 +60,25 @@ export class FileDTO {
   @tracked fileSize: number = 0;
   @tracked fileName: string = '';
   @tracked lastModified: number = 0;
+  get formattedSize() {
+    return this.fileSize.toLocaleString('ru-RU');
+  }
   get fileLastModified() {
     return this.file?.lastModified
       ? new Date(this.file.lastModified).toLocaleString('ru-RU', {
           timeZone: 'Europe/Moscow',
+          second: undefined,
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          year: 'numeric',
+          minute: '2-digit',
         })
       : '';
   }
   get isInvalid() {
     return (
-      !this.designation ||
-      !this.documentName ||
-      !this.hash ||
-      !this.version ||
-      !this.lastChangeNumber
+      !this.hash
     );
   }
   constructor(file: File) {
@@ -66,17 +88,5 @@ export class FileDTO {
     this.fileSize = file.size;
     this.lastModified = file.lastModified;
     this.file = file;
-    try {
-      const meta = JSON.parse(read(key, '{}'));
-      if (meta === null || typeof meta !== 'object') {
-        return;
-      }
-      this.designation = meta.designation ?? '';
-      this.version = meta.version ?? 1;
-      this.documentName = meta.documentName ?? '';
-      this.lastChangeNumber = meta.lastChangeNumber ?? 1;
-    } catch (e) {
-      // EOL
-    }
   }
 }
