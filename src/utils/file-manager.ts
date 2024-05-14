@@ -46,7 +46,8 @@ export class DocumentDTO {
   constructor() {
     this.designation = read('designation', '');
     const sn = read('serialNumber', '');
-    this.serialNumber = sn ? parseInt(sn) : '';
+    const snText = sn ? parseInt(sn) : '';
+    this.serialNumber = typeof snText === 'number' && isNaN(snText) ? '' : snText;
     this.documentName = read('documentName', '');
     this.lastChangeNumber = parseInt(read('lastChangeNumber', '1'));
     this.objectName = read('objectName', '');

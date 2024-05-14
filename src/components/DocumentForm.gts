@@ -16,7 +16,17 @@ export class DocumentForm extends Component<{
 }> {
   onChange = (field: DocumentField, e: Event) => {
     const target = e.target as HTMLInputElement;
-    if (field === 'serialNumber' || field === 'lastChangeNumber') {
+    if (field === 'serialNumber') {
+      const v = target.valueAsNumber;
+      if (isNaN(v)) {
+        this.args.onChange(field, '');
+        return;
+      } else {
+        this.args.onChange(field, v);
+        return;
+      }
+      this.args.onChange(field, target.valueAsNumber);
+    } else if (field === 'lastChangeNumber') {
       this.args.onChange(field, target.valueAsNumber);
     } else {
       this.args.onChange(field, target.value);
