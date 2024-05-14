@@ -172,17 +172,20 @@ export default class App extends Component {
     const modelsToProcess = models.filter(
       (model) => model.file && (!model.hash || model.algo !== algo),
     );
-    let bitesToProcess = modelsToProcess.reduce((acc, model) => {
-      return acc + model.fileSize;
+    let chunksToProcess = modelsToProcess.reduce((acc, model) => {
+      return acc + (Math.floor(model.file!.size / CHUNK_SIZE) || 1);
     }, 0);
+    let processedChunks = 0;
     for (let model of modelsToProcess) {
       if (this.epoch !== epoch) {
         return;
       }
       const file = model.file!;
+      const chunksForFile = Math.floor(file.size / CHUNK_SIZE) || 1;
       const progress = new Progress(
         () => this.epoch === epoch,
-        Math.floor(bitesToProcess / CHUNK_SIZE),
+        chunksToProcess,
+        processedChunks,
       );
 
       try {
@@ -194,6 +197,7 @@ export default class App extends Component {
       } catch (e) {
         throw e;
       } finally {
+        processedChunks += chunksForFile;
         if (this.progress === progress) {
           this.progress = null;
         }
@@ -201,7 +205,6 @@ export default class App extends Component {
           return;
         }
       }
-      bitesToProcess -= model.fileSize;
     }
     this.progress = null;
   }

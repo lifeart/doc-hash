@@ -83,7 +83,7 @@ export async function getHash(
       CHUNK_SIZE * i,
       Math.min(CHUNK_SIZE * (i + 1), file.size),
     );
-    loader.currentChunk = i;
+    loader.currentChunk++;
     await hashChunk(chunk);
   }
 

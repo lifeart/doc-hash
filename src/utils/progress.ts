@@ -1,9 +1,10 @@
 import 'decorator-transforms/globals'; // workaround for test bundling
 import { tracked } from '@lifeart/gxt';
 export class Progress {
-  constructor(isActual: () => boolean, totalChunks: number) {
+  constructor(isActual: () => boolean, totalChunks: number, processedChunks = 0) {
     this.isActual = isActual;
     this.totalChunks = totalChunks;
+    this.currentChunk = processedChunks;
   }
   @tracked currentChunk = 1;
   isActual: () => boolean;
