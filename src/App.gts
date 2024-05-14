@@ -41,17 +41,6 @@ export default class App extends Component {
       ]),
     ),
   ) as User[];
-  @tracked file: null | File = null;
-  @tracked
-  designation: string = read('designation', '');
-  @tracked
-  documentName: string = read('documentName', '');
-  @tracked
-  version: number = parseInt(read('version', '1'), 10);
-  @tracked
-  lastChangeNumber: number = parseInt(read('lastChangeNumber', '1'), 10);
-  @tracked
-  fileHash: string = read('fileHash', '');
   @tracked
   fileLink: string = read('fileLink', '');
   @tracked
@@ -80,26 +69,26 @@ export default class App extends Component {
   onFileSelect = (fileList: FileList) => {
     this.models = addFilesToDto(fileList);
   };
-  setFileHash = (hash: string) => {
-    this.fileHash = hash;
-    write('fileHash', hash);
-  };
 
   get isFormInvalid() {
-    return (
-      !this.models.length ||
-      !this.users.length ||
-      !this.selectedAlgo ||
-      this.models.some((model) => {
+    const hasDocuments = this.models.length;
+    const hasUsers = this.users.length;
+    const hasAlgo = this.selectedAlgo;
+    const isInvalid =
+      this.models.filter((model) => {
         return model.isInvalid;
-      })
-    );
-  }
-  get fileName() {
-    return this.file?.name ?? '';
-  }
-  get fileSize() {
-    return this.file?.size ?? '';
+      }).length > 0;
+    if (!hasDocuments) {
+      console.log('No documents');
+    } else if (!hasUsers) {
+      console.log('No users');
+    } else if (!hasAlgo) {
+      console.log('No algo');
+    } else if (isInvalid) {
+      console.log('Invalid files');
+    }
+
+    return !hasDocuments || !hasUsers || !hasAlgo || isInvalid;
   }
   onRemoveFile = (model: FileDTO) => {
     this.models = removeFile(model);
@@ -167,11 +156,13 @@ export default class App extends Component {
       }
       const hash = await getHash(file, algo);
       model.hash = hash;
+      console.log('Hash', hash);
     }
   }
   effects = [
     effect(() => {
-      if (!this.isFormInvalid) {
+      const { isFormInvalid } = this;
+      if (!isFormInvalid) {
         this.generateDocument();
       } else {
         this.setFileLink('');
@@ -194,7 +185,8 @@ export default class App extends Component {
             <DocumentForm
               @designation={{this.doc.designation}}
               @documentName={{this.doc.documentName}}
-              @version={{this.doc.version}}
+              @objectName={{this.doc.objectName}}
+              @serialNumber={{this.doc.serialNumber}}
               @lastChangeNumber={{this.doc.lastChangeNumber}}
               @onChange={{fn this.onDocumentFieldChange this.doc}}
             />
@@ -208,11 +200,6 @@ export default class App extends Component {
                     @selected={{this.selectedAlgo}}
                     @onSelect={{this.selectAlgo}}
                   />
-                </div>
-                <div class='flex-auto'>
-                  <pre
-                    class='pt-2 font-weight-bold text-sm overflow-hidden p-2'
-                  >{{this.fileHash}}</pre>
                 </div>
               </div>
             </FileForm>

@@ -27,27 +27,29 @@ export function removeFile(file: FileDTO) {
 }
 
 export class DocumentDTO {
+  @tracked objectName: string = '';
   @tracked
   designation: string = '';
   @tracked
   documentName: string = '';
   @tracked
-  version: number = 1;
+  serialNumber: number | '' = '';
   @tracked
   lastChangeNumber: number = 1;
   get isInvalid() {
     return (
       !this.designation ||
       !this.documentName ||
-      !this.version ||
       !this.lastChangeNumber
     );
   }
   constructor() {
     this.designation = read('designation', '');
-    this.version = parseInt(read('version', '1'));
+    const sn = read('serialNumber', '');
+    this.serialNumber = sn ? parseInt(sn) : '';
     this.documentName = read('documentName', '');
     this.lastChangeNumber = parseInt(read('lastChangeNumber', '1'));
+    this.objectName = read('objectName', '');
   }
 }
 

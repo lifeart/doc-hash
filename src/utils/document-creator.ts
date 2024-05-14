@@ -54,14 +54,12 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     const rows: any[] = [createRow([
       { label: t.serial_number },
       { label: t.document_designation },
-      { label: t.product_name },
-      { label: t.version },
+      { label: t.product_name, colSpan: 2},
       { label: t.last_change_number },
     ]), createRow([
-      { label: '' },
+      { label: String(data.doc.serialNumber) },
       { label: data.doc.designation },
-      { label: data.doc.documentName },
-      { label: String(data.doc.version) },
+      { label: data.doc.documentName, colSpan: 2 },
       { label: String(data.doc.lastChangeNumber) },
     ]), createRow([
       {
@@ -126,6 +124,10 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     const table = new Table({
       columnWidths: [1260, 2520, 3780, 2520, 1260],
       rows: [
+        createRow([
+          { label: t.object_name, colSpan: 2 },
+          { label: data.doc.objectName, colSpan: 3},
+        ]),
         ...rows,
         createRow([
           { label: t.work_type, colSpan: 2 },

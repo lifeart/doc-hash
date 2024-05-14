@@ -18,7 +18,7 @@ export const HashFunctions: Record<
 
 export type User = { role: string; lastName: string };
 
-export type DocumentField = 'lastChangeNumber' | 'version' | 'documentName' | 'designation';
+export type DocumentField = 'lastChangeNumber' | 'serialNumber' | 'documentName' | 'designation';
 
 export const algos = [
   { label: 'MD5', value: AlgorithmType.MD5 },

@@ -34,27 +34,31 @@ export class Print extends Component<{
 
       <table>
         <tr style='break-inside: avoid; break-after: avoid;'>
+          <td colspan='2' class='text-center font-bold'>
+            {{t.object_name}}
+          </td>
+          <td colspan='5' class='text-center font-bold'>
+            {{@doc.objectName}}
+          </td>
+        </tr>
+        <tr style='break-inside: avoid; break-after: avoid;'>
           <td width='15%' class='text-center font-bold'>
             {{t.serial_number}}
           </td>
-          <td width='23.7%' class='text-center font-bold'>
+          <td width='23.7%' class='text-center font-bold' colspan='2'>
             {{t.document_designation}}
           </td>
           <td width='39.55%' class='text-center font-bold' colspan='3'>
             {{t.product_name}}
           </td>
           <td width='15.23%' class='text-center font-bold'>
-            {{t.version}}
-          </td>
-          <td width='15.23%' class='text-center font-bold'>
             {{t.last_change_number}}
           </td>
         </tr>
         <tr style='break-inside: avoid; break-after: avoid;'>
-          <td>&nbsp;</td>
-          <td class='text-center'>{{@doc.designation}}</td>
+          <td class='text-center'>{{@doc.serialNumber}}</td>
+          <td class='text-center' colspan='2'>{{@doc.designation}}</td>
           <td colspan='3'>{{@doc.documentName}}</td>
-          <td class='text-center'>{{@doc.version}}</td>
           <td class='text-center'>{{@doc.lastChangeNumber}}</td>
         </tr>
         <tr style='break-inside: avoid; break-after: avoid;'>
@@ -140,8 +144,8 @@ export class Print extends Component<{
           <td colspan='2' rowspan='2'>{{t.assurance_sheet}}</td>
           <td colspan='3' rowspan='2'>{{@doc.designation}} {{t.u_l}}</td>
 
-          <td rowspan='1'>{{t.sheet}}</td>
-          <td rowspan='1'>{{t.sheets}}</td>
+          <td rowspan='1' width='14%'>{{t.sheet}}</td>
+          <td rowspan='1' width='14%'>{{t.sheets}}</td>
         </tr>
         <tr style='break-inside: avoid; break-after: auto;'>
           <td rowspan='1'>&nbsp;</td>

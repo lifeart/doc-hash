@@ -8,14 +8,15 @@ export class DocumentForm extends Component<{
   Args: {
     designation: string;
     documentName: string;
-    version: number;
+    serialNumber: number | string;
+    objectName: string;
     lastChangeNumber: number;
     onChange: (field: DocumentField, value: string | number) => void;
   };
 }> {
   onChange = (field: DocumentField, e: Event) => {
     const target = e.target as HTMLInputElement;
-    if (field === 'version' || field === 'lastChangeNumber') {
+    if (field === 'serialNumber' || field === 'lastChangeNumber') {
       this.args.onChange(field, target.valueAsNumber);
     } else {
       this.args.onChange(field, target.value);
@@ -24,6 +25,18 @@ export class DocumentForm extends Component<{
 
   <template>
     <div>
+      <div class='flex'>
+        <div class='flex-auto p-4'>
+          <Label @for='object-name'>{{t.object_name}}:</Label>
+          <Input
+            type='text'
+            id='object-name'
+            @value={{@objectName}}
+            class={{if (not @objectName.length) 'border-danger' ''}}
+            {{on 'input' (fn this.onChange 'objectName')}}
+          />
+        </div>
+      </div>
       <div class='flex'>
         <div class='flex-auto p-4'>
           <Label @for='designation'>{{t.designation}}:</Label>
@@ -53,16 +66,16 @@ export class DocumentForm extends Component<{
 
       <div class='flex'>
         <div class='flex-auto p-4'>
-          <Label @for='version'>{{t.version}}:</Label>
+          <Label @for='version'>{{t.serial_number}}:</Label>
           <Input
             type='number'
-            min='1'
-            max='9999'
+            min='0'
+            max='99999999'
             step='1'
             id='version'
-            @value={{@version}}
-            class={{if (not @version) 'border-danger' ''}}
-            {{on 'input' (fn this.onChange 'version')}}
+            @value={{@serialNumber}}
+            class={{if (not @serialNumber) 'border-danger' ''}}
+            {{on 'input' (fn this.onChange 'serialNumber')}}
           />
         </div>
 
