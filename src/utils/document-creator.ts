@@ -23,8 +23,60 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     HeadingLevel,
     // TextRun,
     // ShadingType,
+    PatchType,
+    TextRun,
+    patchDocument,
     VerticalAlign,
   } = await import('docx');
+
+  fetch('./template_1.docx').then(async (response) => {
+    const fileData = await response.blob();
+    patchDocument(fileData,{
+      patches: {
+        object_name_title: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.object_name),
+          ]
+        },
+        object_name_value: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(data.doc.objectName),
+          ]
+        },
+        serial_number_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.serial_number),
+          ]
+        },
+        serial_number_value: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(String(data.doc.serialNumber)),
+          ]
+        },
+      }
+    }).then(async (blob)=> {
+      const DocXBlob = new Blob([blob]);
+
+      const reader = new FileReader();
+    
+      await new Promise((resolve) => {
+        reader.onloadend = resolve;
+        reader.readAsDataURL(DocXBlob);
+      });
+    
+      // crate link to download
+      const link = window.document.createElement('a');
+      link.href = reader.result as string;
+      link.download = 'template_1.docx';
+      window.document.body.appendChild(link);
+      link.click();
+      window.document.body.removeChild(link);
+    });
+  });
   const document = new Document({
     styles: {
       default: {
