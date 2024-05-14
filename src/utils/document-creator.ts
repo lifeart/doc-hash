@@ -77,7 +77,6 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
             colSpan: 3,
           },
         ]),
-        createSpacingRow(),
         createRow([
           {
             label: t.file_name,
@@ -103,7 +102,8 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
           {
             label: String(model.fileSize),
           },
-        ])
+        ]),
+        createSpacingRow(),
       ];
       fileRows.forEach((row) => {
         rows.push(row);
@@ -113,7 +113,6 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       columnWidths: [1260, 2520, 3780, 2520, 1260],
       rows: [
         ...rows,
-        createSpacingRow(),
         createRow([
           { label: t.work_type, colSpan: 2 },
           { label: t.full_name },

@@ -11,7 +11,8 @@ export function style() {
   }
   body {
     background-color: #fff;
-    /* margin: 40px; */
+    margin: 0;
+    padding: 0;
     font: 13px/20px normal Arial, Helvetica, sans-serif;
     color: #4f5155;
     line-height: 1.2;
@@ -19,8 +20,8 @@ export function style() {
   }
   
   @page {
-    size: auto;
-    margin: 0;
+    size: A4 portrait;
+    margin: 20mm 0 10mm 0;
   }
   
   h1 {
@@ -99,7 +100,7 @@ export function style() {
       display: none;
     }
     .container {
-      margin-top: 32px;
+      margin-top: 0;
       padding-right: 24px;
       padding-left: 80px;
     }

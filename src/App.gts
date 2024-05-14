@@ -107,6 +107,7 @@ export default class App extends Component {
     // create new window and render Print component to it
     const win = window.open('', 'printwindow');
     if (!win) return;
+    win.document.title = t.iul;
     renderComponent(
       new Print({
         selectedAlgo: this.selectedAlgoName,

@@ -28,8 +28,7 @@ export class Print extends Component<{
       <table>
 
         {{#each @files as |model|}}
-          <tr>
-
+          <tr style='break-inside: avoid; break-after: avoid;'>
             <td width='15%' class='text-center font-bold'>
               {{t.serial_number}}
             </td>
@@ -46,14 +45,14 @@ export class Print extends Component<{
               {{t.last_change_number}}
             </td>
           </tr>
-          <tr>
+          <tr style='break-inside: avoid; break-after: avoid;'>
             <td>&nbsp;</td>
             <td class='text-center'>{{model.designation}}</td>
             <td colspan='3'>{{model.documentName}}</td>
             <td class='text-center'>{{model.version}}</td>
             <td class='text-center'>{{model.lastChangeNumber}}</td>
           </tr>
-          <tr>
+          <tr style='break-inside: avoid; break-after: avoid;'>
             <td class='text-center font-bold' colspan='2'>
               {{@selectedAlgo}}
             </td>
@@ -61,12 +60,7 @@ export class Print extends Component<{
               {{model.hash}}
             </td>
           </tr>
-          <tr>
-            <td colspan='7' style='padding: 2px'>
-              &nbsp;
-            </td>
-          </tr>
-          <tr>
+          <tr style='break-inside: avoid; break-after: avoid;'>
             <td class='text-center font-bold' colspan='3'>
               {{t.file_name}}
             </td>
@@ -77,7 +71,7 @@ export class Print extends Component<{
               {{t.file_size}}
             </td>
           </tr>
-          <tr>
+          <tr style='break-inside: avoid; break-after: avoid;'>
             <td class='text-center' colspan='3'>
               {{model.fileName}}
             </td>
@@ -86,7 +80,7 @@ export class Print extends Component<{
               {{model.fileSize}}
             </td>
           </tr>
-          <tr>
+          <tr style='break-inside: avoid; break-after: auto;'>
             <td colspan='7' style='padding: 2px'>
               &nbsp;
             </td>
@@ -95,7 +89,7 @@ export class Print extends Component<{
 
       </table>
 
-      <table style='margin-top: 2%'>
+      <table style='margin-top: 2%; break-before: auto;'>
         <tr>
           <td width='25%' class='text-center font-bold'>
             {{t.work_type}}
