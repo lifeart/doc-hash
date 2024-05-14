@@ -196,12 +196,12 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       });
     
       // crate link to download
-      const link = window.document.createElement('a');
-      link.href = reader.result as string;
-      link.download = 'template_1.docx';
-      window.document.body.appendChild(link);
-      link.click();
-      window.document.body.removeChild(link);
+      // const link = window.document.createElement('a');
+      // link.href = reader.result as string;
+      // link.download = 'template_1.docx';
+      // window.document.body.appendChild(link);
+      // link.click();
+      // window.document.body.removeChild(link);
     });
   });
   const document = new Document({
@@ -210,7 +210,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         document: {
           run: {
             font: 'Times New Roman',
-            size: 12,
+            size: '12pt', // pc
           },
         },
       },
@@ -232,44 +232,55 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
 
   function createAssuranceTable(data: AssuranceSheetData) {
     const rows: any[] = [createRow([
-      { label: t.serial_number },
-      { label: t.document_designation },
-      { label: t.product_name, colSpan: 2},
-      { label: t.last_change_number },
+      { label: t.serial_number, size: 10, colSpan: 1 },
+      { label: t.document_designation, size: 20, colSpan: 2 },
+      { label: t.product_name, size: 50, colSpan: 5},
+      { label: t.last_change_number, size: 20, colSpan: 2 },
     ]), createRow([
-      { label: String(data.doc.serialNumber) },
-      { label: data.doc.designation },
-      { label: data.doc.documentName, colSpan: 2 },
-      { label: String(data.doc.lastChangeNumber) },
+      { label: String(data.doc.serialNumber), size: 10, colSpan: 1 },
+      { label: data.doc.designation, size: 20, colSpan: 2 },
+      { label: data.doc.documentName, size: 50, colSpan: 5},
+      { label: String(data.doc.lastChangeNumber), size: 20, colSpan: 2 },
     ]), createRow([
       {
         label: data.hashFunction,
-        colSpan: 2,
+        size: 30,
+        colSpan: 3,
       },
       {
         label: data.files.length === 1 ? data.files[0].hash : '',
-        colSpan: 3,
+        size: 70,
+        colSpan: 7,
       },
     ])];
-
+    // [30, 23, 23, 24],
     const fileHeadingRow = [
       {
         label: t.file_name,
-        colSpan: 2,
+        size: 30,
+        colSpan: 3,
       },
       {
         label: t.last_modified,
-        colSpan: 2,
+        size: 30,
+        colSpan: 3,
       },
       {
         label: t.file_size,
+        size: 40,
+        colSpan: 4,
       },
     ];
     if (data.files.length > 1) {
-      fileHeadingRow[1].colSpan = 1;
       fileHeadingRow.push({
         label: t.checksum_value,
+        size: 30,
+        colSpan: 3,
       });
+      fileHeadingRow[1].size = 20;
+      fileHeadingRow[1].colSpan = 2;
+      fileHeadingRow[2].size = 20;
+      fileHeadingRow[2].colSpan = 2;
     }
 
     rows.push(createRow(fileHeadingRow));
@@ -278,21 +289,30 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       const rowContent = [
         {
           label: model.fileName,
-          colSpan: 2,
+          size: 30,
+          colSpan: 3,
         },
         {
           label: model.fileLastModified,
-          colSpan: 2,
+          size: 30,
+          colSpan: 3,
         },
         {
           label: model.formattedSize,
+          size: 40,
+          colSpan: 4,
         },
       ];
       if (data.files.length > 1) {
-        rowContent[1].colSpan = 1;
         rowContent.push({
           label: model.hash,
+          colSpan: 3,
+          size: 30,
         });
+        rowContent[1].size = 20;
+        rowContent[1].colSpan = 2;
+        rowContent[2].size = 20;
+        rowContent[2].colSpan = 2;
       }
       const fileRows = [
         createRow(rowContent),
@@ -301,51 +321,53 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         rows.push(row);
       });
     })
+    const columnWidth = 910; // 963
+    const gridSize = 10;
     const table = new Table({
-      columnWidths: [1260, 2520, 3780, 2520, 1260],
       rows: [
         createRow([
-          { label: t.object_name, colSpan: 2 },
-          { label: data.doc.objectName, colSpan: 3},
+          { label: t.object_name, size: 30, colSpan: 3, bold: true},
+          { label: data.doc.objectName, size: 70, colSpan: 7, bold: true},
         ]),
         ...rows,
         createRow([
-          { label: t.work_type, colSpan: 2 },
-          { label: t.full_name },
-          { label: t.signature },
-          { label: t.signing_date },
+          { label: t.work_type, size: 30, colSpan: 3 },
+          { label: t.full_name, size: 20, colSpan: 2 },
+          { label: t.signature, size: 20, colSpan: 2 },
+          { label: t.signing_date, size: 30, colSpan: 3 },
         ]),
         ...data.users.map((user) =>
           createRow([
-            { label: user.role, colSpan: 2 },
-            { label: user.lastName },
-            { label: '' },
-            { label: '' },
+            { label: user.role, size: 30, colSpan: 3 },
+            { label: user.lastName, size: 20, colSpan: 2 },
+            { label: '', size: 20, colSpan: 2 },
+            { label: '', size: 30, colSpan: 3 },
           ]),
         ),
         createSpacingRow(),
         createRow([
-          { rowSpan: 2, label: t.assurance_sheet },
-          { colSpan: 2, rowSpan: 2, label: `${t.u_l} ${data.doc.designation}` },
-          { rowSpan: 1, label: t.sheet },
-          { rowSpan: 1, label: t.sheets },
+          { rowSpan: 5, label: t.assurance_sheet, size: 50, colSpan: 5 },
+          { rowSpan: 2, label: `${data.doc.designation} ${t.u_l}`, size: 30, colSpan: 3},
+          { rowSpan: 1, label: t.sheet, size: 10, colSpan: 1 },
+          { rowSpan: 1, label: t.sheets, size: 10, colSpan: 1 },
         ]),
         createRow([
-          { rowSpan: 1, label: '1' },
-          { rowSpan: 1, label: '1' },
+          { rowSpan: 1, label: '1', size: 10, colSpan: 1 },
+          { rowSpan: 1, label: '1', size: 10, colSpan: 1 },
         ])
       ],
       width: {
-        size: 100,
-        type: WidthType.PERCENTAGE,
+        size: columnWidth * gridSize,
+        type: WidthType.DXA,
       },
+      columnWidths:  new Array(gridSize).fill(columnWidth),
       borders: {
-        top: { size: 1, style: BorderStyle.SINGLE },
-        bottom: { size: 1, style: BorderStyle.SINGLE },
-        left: { size: 1, style: BorderStyle.SINGLE },
-        right: { size: 1, style: BorderStyle.SINGLE },
-        insideHorizontal: { size: 1, style: BorderStyle.SINGLE },
-        insideVertical: { size: 1, style: BorderStyle.SINGLE },
+        top: { size: 1, style: BorderStyle.SINGLE, color: '000000'},
+        bottom: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
+        left: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
+        right: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
+        insideHorizontal: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
+        insideVertical: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
       },
     });
 
@@ -353,21 +375,28 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
   }
 
   function createSpacingRow() {
+    const spans = [3, 2, 2, 3];
     return new TableRow({
       children: [
-        new TableCell({
-          borders: {
-            left: { size: 0, style: BorderStyle.SINGLE },
-            right: { size: 0, style: BorderStyle.SINGLE },
-          },
-          children: [new Paragraph('')],
-          columnSpan: 5,
-          // shading: {
-          //   type: ShadingType.SOLID,
-          //   color: 'CCCCCC',
-          // },
-          verticalAlign: VerticalAlign.CENTER,
-        }),
+        ...spans.map((size) => {
+          return new TableCell({
+            // borders: {
+            //   left: { size: 0, style: BorderStyle.SINGLE },
+            //   right: { size: 0, style: BorderStyle.SINGLE },
+            // },
+            children: [new Paragraph('')],
+            columnSpan: size,
+            // shading: {
+            //   type: ShadingType.SOLID,
+            //   color: 'CCCCCC',
+            // },
+            verticalAlign: VerticalAlign.CENTER,
+            width: {
+              size: size * 10,
+              type: WidthType.PERCENTAGE,
+            },
+          })
+        })
       ],
     });
   }
@@ -377,15 +406,26 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       label: string;
       colSpan?: number;
       rowSpan?: number;
+      size: number;
+      bold?: boolean;
       alignment?: keyof typeof AlignmentType;
     }>,
   ) {
     return new TableRow({
       children: cells.map((cell) => {
         return new TableCell({
+          width: {
+            size: cell.size,
+            type: WidthType.PERCENTAGE,
+          },
           children: [
             new Paragraph({
-              text: cell.label,
+              alignment: AlignmentType.CENTER,
+              children: [new TextRun({
+                text: cell.label,
+                bold: cell.bold === true,
+                size: 12*2,
+              })],
             }),
           ],
           columnSpan: cell.colSpan,
