@@ -12,6 +12,7 @@ import {
   type User,
   getHash,
   type DocumentField,
+  CHUNK_SIZE,
 } from '@/utils/constants';
 import { createAssuranceSheet } from '@/utils/document-creator';
 import { read, write } from '@/utils/persisted';
@@ -23,6 +24,7 @@ import {
   removeFile,
 } from './utils/file-manager';
 import { Progress } from './utils/progress';
+import { delay } from './utils/timers';
 
 export default class App extends Component {
   epoch = 0;
@@ -59,6 +61,9 @@ export default class App extends Component {
   selectAlgo = (name: AlgorithmType) => {
     this.epoch++;
     this.selectedAlgo = name;
+    for (let model of this.models) {
+      model.hash = '';
+    }
     write('algo', name);
   };
   onRemoveUser = (user: User) => {
@@ -158,15 +163,27 @@ export default class App extends Component {
     };
   };
   async calcFileHashes(models: FileDTO[], algo: AlgorithmType, epoch: number) {
-    for (let model of models) {
+    while (this.progress) {
+      await delay(100);
+    }
+    if (this.epoch !== epoch) {
+      return;
+    }
+    const modelsToProcess = models.filter(
+      (model) => model.file && (!model.hash || model.algo !== algo),
+    );
+    let bitesToProcess = modelsToProcess.reduce((acc, model) => {
+      return acc + model.fileSize;
+    }, 0);
+    for (let model of modelsToProcess) {
       if (this.epoch !== epoch) {
         return;
       }
-      const file = model.file;
-      if (!file || (model.hash && model.algo === algo)) {
-        continue;
-      }
-      const progress = new Progress(() => this.epoch === epoch);
+      const file = model.file!;
+      const progress = new Progress(
+        () => this.epoch === epoch,
+        Math.floor(bitesToProcess / CHUNK_SIZE),
+      );
 
       try {
         this.progress = progress;
@@ -184,6 +201,7 @@ export default class App extends Component {
           return;
         }
       }
+      bitesToProcess -= model.fileSize;
     }
     this.progress = null;
   }
@@ -207,6 +225,9 @@ export default class App extends Component {
       });
     }),
   ];
+  get progressWidth() {
+    return `${this.progress?.percents ?? 100}%`;
+  }
   <template>
     <div class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8' {{this.cleanup}}>
       <div class='mx-auto max-w-3xl'>
@@ -267,32 +288,42 @@ export default class App extends Component {
 
           </Panel>
 
-          <div class='mt-3 mb-3'><button
-              class='rounded w-full bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-              class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
-              type='button'
-              target='_blank'
-              rel='noreferrer'
-              {{on 'click' this.onPrint}}
-            >
-              {{t.print}}
-            </button>
-
-            {{#if this.fileLink}}
-              <a
-                href={{this.fileLink}}
-                class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
-                download={{this.docFileName}}
-              >
-                {{t.download_assurance_sheet}}
-              </a>
-            {{/if}}
+          <div class='mt-3 mb-3'>
             {{#if this.progress}}
-              <div>
-                Remaining:
-                {{this.progress.secondsRemaining}}s
+              <div
+                title={{t.hashing_files}}
+                class='w-full bg-gray-200 cursor-progress rounded-full h-2.5 dark:bg-gray-700'
+              >
+                <div
+                  class='bg-yellow-500 h-2.5 rounded-full'
+                  style.width={{this.progressWidth}}
+                ></div>
               </div>
+              <div>
+              </div>
+            {{else}}
+              <button
+                class='rounded w-full bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
+                type='button'
+                target='_blank'
+                rel='noreferrer'
+                {{on 'click' this.onPrint}}
+              >
+                {{t.print}}
+              </button>
+
+              {{#if this.fileLink}}
+                <a
+                  href={{this.fileLink}}
+                  class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
+                  download={{this.docFileName}}
+                >
+                  {{t.download_assurance_sheet}}
+                </a>
+              {{/if}}
             {{/if}}
+
           </div></div></div></div>
   </template>
 }

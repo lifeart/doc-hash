@@ -1,28 +1,15 @@
 import { tracked } from '@lifeart/gxt';
-
 export class Progress {
-  constructor(isActual: () => boolean) {
+  constructor(isActual: () => boolean, totalChunks: number) {
     this.isActual = isActual;
+    this.totalChunks = totalChunks;
   }
-  @tracked currentChunk = 0;
+  @tracked currentChunk = 1;
   isActual: () => boolean;
-  @tracked totalChunks = 0;
-  @tracked startTime = Date.now();
-  get timeElapsed() {
-    return Date.now() - this.startTime;
+  totalChunks = 0;
+  get percents() {
+    const value = this.totalChunks ? (this.currentChunk / this.totalChunks) * 100 : 0;
+    return value.toFixed(2);
   }
-  get msRemaining() {
-    return (
-      (this.timeElapsed / this.currentChunk) *
-      (this.totalChunks - this.currentChunk)
-    );
-  }
-  get secondsRemaining() {
-    const result =  Math.floor(this.msRemaining / 1000);
-    if (isNaN(result)) {
-      return 0;
-    } else {
-      return result;
-    }
-  }
+  
 }

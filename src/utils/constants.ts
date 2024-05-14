@@ -1,6 +1,9 @@
 import type { createMD5 as createMD5Type } from 'hash-wasm';
 import { t } from '@/utils/t';
 import { Progress } from './progress';
+import { delay } from './timers';
+
+export const CHUNK_SIZE = 64 * 1024 * 1024;
 
 export enum AlgorithmType {
   MD5 = 'md5',
@@ -19,7 +22,11 @@ export const HashFunctions: Record<
 
 export type User = { role: string; lastName: string };
 
-export type DocumentField = 'lastChangeNumber' | 'serialNumber' | 'documentName' | 'designation';
+export type DocumentField =
+  | 'lastChangeNumber'
+  | 'serialNumber'
+  | 'documentName'
+  | 'designation';
 
 export const algos = [
   { label: 'MD5', value: AlgorithmType.MD5 },
@@ -43,13 +50,15 @@ export const roles = [
   ...defaultRoles.map((role) => ({ label: role, value: role })),
 ];
 
-export async function getHash(file: File, algorithm: AlgorithmType, loader: Progress) {
+export async function getHash(
+  file: File,
+  algorithm: AlgorithmType,
+  loader: Progress,
+) {
   const { createMD5, createSHA1, createCRC32 } = await import('hash-wasm');
 
-  const chunkSize = 64 * 1024 * 1024;
   const fileReader = new FileReader();
-  const chunkNumber = Math.floor(file.size / chunkSize);
-  loader.totalChunks = chunkNumber;
+  const chunkNumber = Math.floor(file.size / CHUNK_SIZE);
 
   if (!HashFunctions[algorithm]) {
     if (algorithm === AlgorithmType.MD5) {
@@ -69,10 +78,10 @@ export async function getHash(file: File, algorithm: AlgorithmType, loader: Prog
     if (!loader.isActual()) {
       throw new Error('Hashing was cancelled');
     }
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await delay(10);
     const chunk = file.slice(
-      chunkSize * i,
-      Math.min(chunkSize * (i + 1), file.size),
+      CHUNK_SIZE * i,
+      Math.min(CHUNK_SIZE * (i + 1), file.size),
     );
     loader.currentChunk = i;
     await hashChunk(chunk);
@@ -88,6 +97,7 @@ export async function getHash(file: File, algorithm: AlgorithmType, loader: Prog
         hasher.update(view);
         resolve(true);
       };
+      fileReader.onerror = reject;
 
       fileReader.readAsArrayBuffer(chunk);
     });
