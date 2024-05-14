@@ -1,5 +1,5 @@
 import { type User } from './constants';
-import { FileDTO } from './file-manager';
+import { type DocumentDTO, type FileDTO } from './file-manager';
 import { t } from './t';
 
 type AssuranceSheetData = {
@@ -22,7 +22,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     AlignmentType,
     HeadingLevel,
     // TextRun,
-    ShadingType,
+    // ShadingType,
     VerticalAlign,
   } = await import('docx');
   const document = new Document({
