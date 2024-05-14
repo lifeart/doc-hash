@@ -137,7 +137,16 @@ export default class App extends Component {
     const totalFileSize = this.models.reduce((acc, item) => {
       return acc + item.fileSize;
     }, 0);
-    return `${t.iul}__${totalFileSize}bytes.docx`;
+    return `${t.iul}_${new Date()
+      .toLocaleString('ru-RU', {
+        timeZone: 'Europe/Moscow',
+        dateStyle: 'short',
+        timeStyle: 'short',
+      })
+      .replace(',', '_')}_${totalFileSize}b.docx`;
+  }
+  get currentDateTime() {
+    return;
   }
   cleanup = (_: HTMLDivElement) => {
     return () => {
