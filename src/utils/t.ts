@@ -83,5 +83,5 @@ export const t = {
   sheets: 'Листов',
   // Hasing files:
   hashing_files: 'Хеширование файлов',
-  
+  footer: `© Канунников Александр, ${new Date().getFullYear()}`,
 };

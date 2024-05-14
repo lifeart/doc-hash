@@ -328,5 +328,12 @@ export default class App extends Component {
             {{/if}}
 
           </div></div></div></div>
+    <footer>
+      <div class='text-center text-gray-100 text-shadow pb-2'>
+        <p class='text-sm'>
+          <a href='https://t.me/ilifeart'>{{t.footer}}</a>
+        </p>
+      </div>
+    </footer>
   </template>
 }
