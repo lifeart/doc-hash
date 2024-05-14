@@ -331,7 +331,10 @@ export default class App extends Component {
     <footer>
       <div class='text-center text-gray-100 text-shadow pb-2'>
         <p class='text-sm'>
-          <a href='https://t.me/ilifeart'>{{t.footer}}</a>
+          <a
+            href='https://t.me/ilifeart'
+            title={{t.footer_title}}
+          >{{t.footer}}</a>
         </p>
       </div>
     </footer>
