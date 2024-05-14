@@ -38,11 +38,7 @@ export default class App extends Component {
   users: User[] = JSON.parse(
     read(
       'users',
-      JSON.stringify([
-        { lastName: 'Иванов Иван Иванович', role: 'Эксперт' },
-        { lastName: 'Петров Петр Петрович', role: 'Эксперт' },
-        { lastName: 'Сидоров Сидор Сидорович', role: 'Эксперт' },
-      ]),
+      JSON.stringify([{ lastName: 'Иванов Иван Иванович', role: 'Эксперт' }]),
     ),
   ) as User[];
   @tracked
@@ -236,7 +232,9 @@ export default class App extends Component {
       <div class='mx-auto max-w-3xl'>
         <div class='pb-5'>
           <div class='py-3'>
-            <h1 class='text-center py-3 text-gray-100 text-shadow'>{{t.title}}
+            <h1
+              class='text-center font-bold text-xl py-3 text-gray-100 drop-shadow'
+            >{{t.title}}
             </h1></div>
           <Panel @title={{t.document}} class='mt-4'>
             <DocumentForm

@@ -22,6 +22,7 @@ export class FileForm extends Component<{
   <template>
     <div class='p-3'>
       <div class='mt-0'>
+        <Label @for='file'>{{t.specify_files}}</Label>
         <Input
           type='file'
           id='file'

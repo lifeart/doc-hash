@@ -85,4 +85,5 @@ export const t = {
   hashing_files: 'Хеширование файлов',
   footer: `© Канунников Александр, ${new Date().getFullYear()}`,
   footer_title: 'Программные решения для вашего бизнеса',
+  specify_files: 'Можно выбрать один или несколько файлов'
 };

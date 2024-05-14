@@ -21,7 +21,7 @@ export class Panel extends Component<{
   <template>
     <div class='bg-white shadow sm:rounded-lg' ...attributes>
       <div class='px-3 py-3 sm:p-3'>
-        <h3 class='pl-4 text-base font-semibold leading-6 text-gray-900'><small
+        <h2 class='pl-4 text-lg font-semibold leading-6 text-gray-900'><small
             class='cursor-pointer'
             {{on 'click' this.onToggle}}
           >{{@title}}</small>
@@ -33,7 +33,7 @@ export class Panel extends Component<{
             >x</button>
           {{/if}}
 
-        </h3>
+        </h2>
         {{#if (has-block 'default')}}
           {{#if this.isExpanded}}
             <div class='mt-2'>
