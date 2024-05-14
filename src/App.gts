@@ -12,6 +12,7 @@ import {
   type User,
   getHash,
   type DocumentField,
+  CHUNK_SIZE,
 } from '@/utils/constants';
 import { createAssuranceSheet } from '@/utils/document-creator';
 import { read, write } from '@/utils/persisted';
@@ -22,8 +23,11 @@ import {
   FileDTO,
   removeFile,
 } from './utils/file-manager';
+import { Progress } from './utils/progress';
+import { delay } from './utils/timers';
 
 export default class App extends Component {
+  epoch = 0;
   @tracked doc = new DocumentDTO();
   @tracked selectedAlgo = read('algo', algos[0].value) as AlgorithmType;
   get selectedAlgoName() {
@@ -55,7 +59,11 @@ export default class App extends Component {
     write(field, value as string);
   };
   selectAlgo = (name: AlgorithmType) => {
+    this.epoch++;
     this.selectedAlgo = name;
+    for (let model of this.models) {
+      model.hash = '';
+    }
     write('algo', name);
   };
   onRemoveUser = (user: User) => {
@@ -76,7 +84,9 @@ export default class App extends Component {
     const hasAlgo = this.selectedAlgo;
     const isInvalid =
       this.models.filter((model) => {
-        return model.isInvalid;
+        const isInvalid = model.isInvalid;
+        const hasInvalidAlgo = model.algo !== hasAlgo;
+        return hasInvalidAlgo || isInvalid;
       }).length > 0;
     if (!hasDocuments) {
       console.log('No documents');
@@ -119,13 +129,17 @@ export default class App extends Component {
     win.document.close();
     win.focus();
   };
-  generateDocument = () => {
+  generateDocument = (epoch: number) => {
     createAssuranceSheet({
       hashFunction: this.selectedAlgoName,
       users: this.users,
       files: this.models,
       doc: this.doc,
     }).then((link) => {
+      if (this.epoch !== epoch) {
+        this.setFileLink('');
+        return;
+      }
       this.setFileLink(link);
     });
   };
@@ -148,32 +162,75 @@ export default class App extends Component {
       });
     };
   };
-  async calcFileHashes(models: FileDTO[], algo: AlgorithmType) {
-    for (let model of models) {
-      const file = model.file;
-      if (!file) {
-        continue;
-      }
-      const hash = await getHash(file, algo);
-      model.hash = hash;
-      console.log('Hash', hash);
+  async calcFileHashes(models: FileDTO[], algo: AlgorithmType, epoch: number) {
+    while (this.progress) {
+      await delay(100);
     }
+    if (this.epoch !== epoch) {
+      return;
+    }
+    const modelsToProcess = models.filter(
+      (model) => model.file && (!model.hash || model.algo !== algo),
+    );
+    let chunksToProcess = modelsToProcess.reduce((acc, model) => {
+      return acc + (Math.floor(model.file!.size / CHUNK_SIZE) || 1);
+    }, 0);
+    let processedChunks = 0;
+    for (let model of modelsToProcess) {
+      if (this.epoch !== epoch) {
+        return;
+      }
+      const file = model.file!;
+      const chunksForFile = Math.floor(file.size / CHUNK_SIZE) || 1;
+      const progress = new Progress(
+        () => this.epoch === epoch,
+        chunksToProcess,
+        processedChunks,
+      );
+
+      try {
+        this.progress = progress;
+        const hash = await getHash(file, algo, progress);
+        model.hash = hash;
+        model.algo = algo;
+        console.log('Hash', hash);
+      } catch (e) {
+        throw e;
+      } finally {
+        processedChunks += chunksForFile;
+        if (this.progress === progress) {
+          this.progress = null;
+        }
+        if (!progress.isActual()) {
+          return;
+        }
+      }
+    }
+    this.progress = null;
   }
+  @tracked progress: null | Progress = null;
   effects = [
     effect(() => {
       const { isFormInvalid } = this;
-      if (!isFormInvalid) {
-        this.generateDocument();
-      } else {
+      Promise.resolve().then(() => {
         this.setFileLink('');
-      }
+        if (!isFormInvalid) {
+          this.generateDocument(this.epoch);
+        }
+      });
     }),
     effect(() => {
       const algo = this.selectedAlgo;
       const models = this.models;
-      this.calcFileHashes(models, algo);
+      const epoch = this.epoch;
+      Promise.resolve().then(() => {
+        this.calcFileHashes(models, algo, epoch);
+      });
     }),
   ];
+  get progressWidth() {
+    return `${this.progress?.percents ?? 100}%`;
+  }
   <template>
     <div class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8' {{this.cleanup}}>
       <div class='mx-auto max-w-3xl'>
@@ -234,26 +291,52 @@ export default class App extends Component {
 
           </Panel>
 
-          <div class='mt-3 mb-3'><button
-              class='rounded w-full bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-              class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
-              type='button'
-              target='_blank'
-              rel='noreferrer'
-              {{on 'click' this.onPrint}}
-            >
-              {{t.print}}
-            </button>
-
-            {{#if this.fileLink}}
-              <a
-                href={{this.fileLink}}
-                class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
-                download={{this.docFileName}}
+          <div class='mt-3 mb-3'>
+            {{#if this.progress}}
+              <div
+                title={{t.hashing_files}}
+                class='w-full bg-gray-200 cursor-progress rounded-full h-2.5 dark:bg-gray-700'
               >
-                {{t.download_assurance_sheet}}
-              </a>
+                <div
+                  class='bg-yellow-500 h-2.5 rounded-full'
+                  style.width={{this.progressWidth}}
+                ></div>
+              </div>
+              <div>
+              </div>
+            {{else}}
+              <button
+                class='rounded w-full bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
+                type='button'
+                target='_blank'
+                rel='noreferrer'
+                {{on 'click' this.onPrint}}
+              >
+                {{t.print}}
+              </button>
+
+              {{#if this.fileLink}}
+                <a
+                  href={{this.fileLink}}
+                  class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
+                  download={{this.docFileName}}
+                >
+                  {{t.download_assurance_sheet}}
+                </a>
+              {{/if}}
             {{/if}}
+
           </div></div></div></div>
+    <footer>
+      <div class='text-center text-gray-100 text-shadow pb-2'>
+        <p class='text-sm'>
+          <a
+            href='https://t.me/ilifeart'
+            title={{t.footer_title}}
+          >{{t.footer}}</a>
+        </p>
+      </div>
+    </footer>
   </template>
 }

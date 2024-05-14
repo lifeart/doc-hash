@@ -81,4 +81,8 @@ export const t = {
   sheet: 'Лист',
   // Листов
   sheets: 'Листов',
+  // Hasing files:
+  hashing_files: 'Хеширование файлов',
+  footer: `© Канунников Александр, ${new Date().getFullYear()}`,
+  footer_title: 'Программные решения для вашего бизнеса',
 };
