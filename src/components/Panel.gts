@@ -19,21 +19,25 @@ export class Panel extends Component<{
     this.isExpanded = !this.isExpanded;
   };
   <template>
-    <div class='bg-white shadow sm:rounded-lg' ...attributes>
+    <div class='bg-white shadow rounded-lg' ...attributes>
       <div class='px-3 py-3 sm:p-3'>
-        <h2 class='pl-4 text-lg font-semibold leading-6 text-gray-900'><small
-            class='cursor-pointer'
-            {{on 'click' this.onToggle}}
-          >{{@title}}</small>
+        <h2
+          class='pl-4 text-lg font-semibold leading-6 text-gray-900 flex justify-between items-center'
+        >
+          <span class='cursor-pointer truncate' {{on 'click' this.onToggle}}>
+            {{@title}}
+          </span>
           {{#if this.canRemove}}
             <button
-              class='ml-2 text-red-600 text-right'
+              class='ml-2 text-red-600'
               type='button'
               {{on 'click' @onRemove}}
-            >x</button>
+            >
+              ×
+            </button>
           {{/if}}
-
         </h2>
+
         {{#if (has-block 'default')}}
           {{#if this.isExpanded}}
             <div class='mt-2'>

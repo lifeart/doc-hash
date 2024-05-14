@@ -23,15 +23,16 @@ export class Algorithms extends Component<{
     });
   }
   <template>
-    <div class='isolate inline-flex rounded-md shadow-sm'>
+    <div class='isolate flex rounded-md shadow-sm w-full'>
       {{#each this.items as |alg|}}
         <button
+          class='relative inline-flex justify-center items-center flex-grow px-3 py-2 text font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-blue-200 focus:z-10'
           class={{if (eq alg.value @selected) 'bg-blue-100' 'bg-white'}}
-          class='relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-blue-200 focus:z-10'
           class={{alg.class}}
           {{on 'click' (fn @onSelect alg.value)}}
         >
-          {{alg.label}}</button>
+          {{alg.label}}
+        </button>
       {{/each}}
     </div>
   </template>

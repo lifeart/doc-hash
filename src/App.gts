@@ -236,7 +236,7 @@ export default class App extends Component {
               class='text-center font-bold text-xl py-3 text-gray-100 drop-shadow'
             >{{t.title}}
             </h1></div>
-          <Panel @title={{t.document}} class='mt-4'>
+          <Panel @title={{t.document}}>
             <DocumentForm
               @designation={{this.doc.designation}}
               @documentName={{this.doc.documentName}}
@@ -262,7 +262,7 @@ export default class App extends Component {
 
           {{#each this.models as |file|}}
             <Panel
-              class='mt-2'
+              class='mt-4'
               @title={{file.fileName}}
               @onRemove={{fn this.onRemoveFile file}}
             />
@@ -304,7 +304,7 @@ export default class App extends Component {
               </div>
             {{else}}
               <button
-                class='rounded w-full bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                class='rounded w-full bg-green-600 px-2 py-2 uppercase text font-semibold text-white shadow hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                 class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
                 type='button'
                 target='_blank'
@@ -317,7 +317,7 @@ export default class App extends Component {
               {{#if this.fileLink}}
                 <a
                   href={{this.fileLink}}
-                  class='rounded block text-center w-full bg-indigo-50 px-2 py-2 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100 mt-2'
+                  class='rounded block text-center w-full uppercase bg-indigo-50 px-2 py-2 text font-semibold text-indigo-600 shadow hover:bg-indigo-100 mt-2'
                   download={{this.docFileName}}
                 >
                   {{t.download_assurance_sheet}}

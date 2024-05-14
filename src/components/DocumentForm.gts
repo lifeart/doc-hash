@@ -73,8 +73,8 @@ export class DocumentForm extends Component<{
         </div>
       </div>
 
-      <div class='flex'>
-        <div class='flex-auto p-4'>
+      <div class='flex flex-wrap'>
+        <div class='w-full md:w-1/2 p-4'>
           <Label @for='version'>{{t.serial_number}}:</Label>
           <Input
             type='number'
@@ -88,9 +88,8 @@ export class DocumentForm extends Component<{
           />
         </div>
 
-        <div class='flex-auto p-4'>
+        <div class='w-full md:w-1/2 p-4'>
           <Label @for='last-change-number'>{{t.last_change_number}}:</Label>
-
           <Input
             type='number'
             min='1'
@@ -103,6 +102,7 @@ export class DocumentForm extends Component<{
           />
         </div>
       </div>
+
     </div>
   </template>
 }

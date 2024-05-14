@@ -46,8 +46,8 @@ export class RoleForm extends Component<{
 
       {{! ROLE LIST }}
       <div class='py-2'>
-        <form class='flex justify-between' {{on 'submit' this.onAdd}}>
-          <div class='flex-col w-2/5 px-4'>
+        <form class='flex flex-wrap justify-between' {{on 'submit' this.onAdd}}>
+          <div class='w-full md:w-2/5 px-4 mb-4 md:mb-0'>
             <Input
               type='text'
               placeholder={{t.role}}
@@ -68,7 +68,7 @@ export class RoleForm extends Component<{
               {{/each}}
             </datalist>
           </div>
-          <div class='flex-col w-2/5 px-4'>
+          <div class='w-full md:w-2/5 px-4 mb-4 md:mb-0'>
             <Input
               type='text'
               placeholder={{t.surname}}
@@ -82,10 +82,10 @@ export class RoleForm extends Component<{
               {{on 'input' this.setLastName}}
             />
           </div>
-          <div class='flex-col w-1/5 px-4'>
+          <div class='w-full md:w-1/5 px-4'>
             <div class='d-grid'>
               <button
-                class='rounded bg-white p-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+                class='rounded bg-white p-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full'
                 class={{if this.isFormInvalid 'btn-secondary' 'btn-primary'}}
                 type='submit'
               >{{t.add}}</button>
@@ -93,6 +93,7 @@ export class RoleForm extends Component<{
           </div>
         </form>
       </div>
+
     </div>
   </template>
 }

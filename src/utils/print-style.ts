@@ -89,6 +89,7 @@ export function style() {
   
   .container {
     margin-top: 32px;
+    overflow-y: scroll;
   }
   
   @media print {
