@@ -29,11 +29,102 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     VerticalAlign,
   } = await import('docx');
 
+  /**
+    const tableColumnsWidth = [   / %%%
+        100,
+        // 1 row
+        [30, 70],
+        // 2 row
+        [12, 18, 48, 22], 
+        // 3 row
+        [12, 18, 48, 22],
+        // 4 row
+        [30, 70],
+        // 5 row,
+        [30, 23, 23, 24],
+        //  6 row
+        [53   ,23,12, 12],
+      ]
+   */
+  
+
   fetch('./template_1.docx').then(async (response) => {
     const fileData = await response.blob();
     patchDocument(fileData,{
       patches: {
-        object_name_title: {
+        hash_function_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(data.hashFunction),
+          ]
+        },
+        last_modified_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.last_modified),
+          ]
+        },
+        file_size_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.file_size),
+          ]
+        },
+        checksum_value_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.checksum_value),
+          ]
+        },
+        work_type_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.work_type),
+          ]
+        },
+        surname_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.surname),
+          ]
+        },
+        signature_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.signature),
+          ]
+        },
+        signing_date_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.signing_date),
+          ]
+        },
+        file_name_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.file_name),
+          ]
+        },
+        assurance_sheet_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.assurance_sheet),
+          ]
+        },
+        sheets_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.sheets),
+          ]
+        },
+        sheet_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.sheet),
+          ]
+        },
+        object_name_key: {
           type: PatchType.PARAGRAPH,
           children: [
             new TextRun(t.object_name),
@@ -55,6 +146,42 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
           type: PatchType.PARAGRAPH,
           children: [
             new TextRun(String(data.doc.serialNumber)),
+          ]
+        },
+        document_designation_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.document_designation),
+          ]
+        },
+        document_designation_value: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(data.doc.designation),
+          ]
+        },
+        document_name_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.document_name),
+          ]
+        },
+        document_name_value: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(data.doc.documentName),
+          ]
+        },
+        last_change_number_key: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(t.last_change_number),
+          ]
+        },
+        last_change_number_value: {
+          type: PatchType.PARAGRAPH,
+          children: [
+            new TextRun(String(data.doc.lastChangeNumber)),
           ]
         },
       }
@@ -82,7 +209,8 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       default: {
         document: {
           run: {
-            font: 'Arial',
+            font: 'Times New Roman',
+            size: 12,
           },
         },
       },
@@ -203,8 +331,8 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
           { rowSpan: 1, label: t.sheets },
         ]),
         createRow([
-          { rowSpan: 1, label: '' },
-          { rowSpan: 1, label: '' },
+          { rowSpan: 1, label: '1' },
+          { rowSpan: 1, label: '1' },
         ])
       ],
       width: {
