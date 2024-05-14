@@ -84,6 +84,7 @@ export class FileDTO {
       !this.hash
     );
   }
+  @tracked algo: string = '';
   constructor(file: File) {
     const key = keyForFile(file);
     this.key = key;

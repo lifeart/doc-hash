@@ -22,8 +22,10 @@ import {
   FileDTO,
   removeFile,
 } from './utils/file-manager';
+import { Progress } from './utils/progress';
 
 export default class App extends Component {
+  epoch = 0;
   @tracked doc = new DocumentDTO();
   @tracked selectedAlgo = read('algo', algos[0].value) as AlgorithmType;
   get selectedAlgoName() {
@@ -55,6 +57,7 @@ export default class App extends Component {
     write(field, value as string);
   };
   selectAlgo = (name: AlgorithmType) => {
+    this.epoch++;
     this.selectedAlgo = name;
     write('algo', name);
   };
@@ -76,7 +79,9 @@ export default class App extends Component {
     const hasAlgo = this.selectedAlgo;
     const isInvalid =
       this.models.filter((model) => {
-        return model.isInvalid;
+        const isInvalid = model.isInvalid;
+        const hasInvalidAlgo = model.algo !== hasAlgo;
+        return hasInvalidAlgo || isInvalid;
       }).length > 0;
     if (!hasDocuments) {
       console.log('No documents');
@@ -119,13 +124,17 @@ export default class App extends Component {
     win.document.close();
     win.focus();
   };
-  generateDocument = () => {
+  generateDocument = (epoch: number) => {
     createAssuranceSheet({
       hashFunction: this.selectedAlgoName,
       users: this.users,
       files: this.models,
       doc: this.doc,
     }).then((link) => {
+      if (this.epoch !== epoch) {
+        this.setFileLink('');
+        return;
+      }
       this.setFileLink(link);
     });
   };
@@ -148,30 +157,54 @@ export default class App extends Component {
       });
     };
   };
-  async calcFileHashes(models: FileDTO[], algo: AlgorithmType) {
+  async calcFileHashes(models: FileDTO[], algo: AlgorithmType, epoch: number) {
     for (let model of models) {
+      if (this.epoch !== epoch) {
+        return;
+      }
       const file = model.file;
-      if (!file) {
+      if (!file || (model.hash && model.algo === algo)) {
         continue;
       }
-      const hash = await getHash(file, algo);
-      model.hash = hash;
-      console.log('Hash', hash);
+      const progress = new Progress(() => this.epoch === epoch);
+
+      try {
+        this.progress = progress;
+        const hash = await getHash(file, algo, progress);
+        model.hash = hash;
+        model.algo = algo;
+        console.log('Hash', hash);
+      } catch (e) {
+        throw e;
+      } finally {
+        if (this.progress === progress) {
+          this.progress = null;
+        }
+        if (!progress.isActual()) {
+          return;
+        }
+      }
     }
+    this.progress = null;
   }
+  @tracked progress: null | Progress = null;
   effects = [
     effect(() => {
       const { isFormInvalid } = this;
-      if (!isFormInvalid) {
-        this.generateDocument();
-      } else {
+      Promise.resolve().then(() => {
         this.setFileLink('');
-      }
+        if (!isFormInvalid) {
+          this.generateDocument(this.epoch);
+        }
+      });
     }),
     effect(() => {
       const algo = this.selectedAlgo;
       const models = this.models;
-      this.calcFileHashes(models, algo);
+      const epoch = this.epoch;
+      Promise.resolve().then(() => {
+        this.calcFileHashes(models, algo, epoch);
+      });
     }),
   ];
   <template>
@@ -253,6 +286,12 @@ export default class App extends Component {
               >
                 {{t.download_assurance_sheet}}
               </a>
+            {{/if}}
+            {{#if this.progress}}
+              <div>
+                Remaining:
+                {{this.progress.secondsRemaining}}s
+              </div>
             {{/if}}
           </div></div></div></div>
   </template>

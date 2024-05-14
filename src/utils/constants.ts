@@ -1,5 +1,6 @@
 import type { createMD5 as createMD5Type } from 'hash-wasm';
 import { t } from '@/utils/t';
+import { Progress } from './progress';
 
 export enum AlgorithmType {
   MD5 = 'md5',
@@ -42,12 +43,13 @@ export const roles = [
   ...defaultRoles.map((role) => ({ label: role, value: role })),
 ];
 
-export async function getHash(file: File, algorithm: AlgorithmType) {
+export async function getHash(file: File, algorithm: AlgorithmType, loader: Progress) {
   const { createMD5, createSHA1, createCRC32 } = await import('hash-wasm');
 
   const chunkSize = 64 * 1024 * 1024;
   const fileReader = new FileReader();
   const chunkNumber = Math.floor(file.size / chunkSize);
+  loader.totalChunks = chunkNumber;
 
   if (!HashFunctions[algorithm]) {
     if (algorithm === AlgorithmType.MD5) {
@@ -64,10 +66,15 @@ export async function getHash(file: File, algorithm: AlgorithmType) {
   hasher.init();
 
   for (let i = 0; i <= chunkNumber; i++) {
+    if (!loader.isActual()) {
+      throw new Error('Hashing was cancelled');
+    }
+    await new Promise((resolve) => setTimeout(resolve, 10));
     const chunk = file.slice(
       chunkSize * i,
       Math.min(chunkSize * (i + 1), file.size),
     );
+    loader.currentChunk = i;
     await hashChunk(chunk);
   }
 
