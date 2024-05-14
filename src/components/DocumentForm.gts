@@ -25,7 +25,6 @@ export class DocumentForm extends Component<{
         this.args.onChange(field, v);
         return;
       }
-      this.args.onChange(field, target.valueAsNumber);
     } else if (field === 'lastChangeNumber') {
       this.args.onChange(field, target.valueAsNumber);
     } else {

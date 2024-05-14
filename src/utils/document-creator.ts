@@ -20,7 +20,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     WidthType,
     BorderStyle,
     AlignmentType,
-    // HeadingLevel,
+    HeadingLevel,
     // TextRun,
     // ShadingType,
     // PatchType,
@@ -62,11 +62,18 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     sections: [
       {
         children: [
-          // new Paragraph({
-          //   text: t.assurance_sheet,
-          //   heading: HeadingLevel.TITLE,
-          //   alignment: AlignmentType.CENTER,
-          // }),
+          new Paragraph({
+            heading: HeadingLevel.TITLE,
+            alignment: AlignmentType.CENTER,
+            spacing: {
+              after: 100,
+            },
+            children: [new TextRun({
+              text: t.assurance_sheet,
+              bold: true,
+              size: 24,
+            })],
+          }),
           createAssuranceTable(data),
         ],
       },
