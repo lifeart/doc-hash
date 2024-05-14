@@ -323,6 +323,10 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
     })
     const columnWidth = 910; // 963
     const gridSize = 10;
+    const columnWidths = [
+      columnWidth, columnWidth, columnWidth, columnWidth, columnWidth,
+      columnWidth, columnWidth, columnWidth - 100, columnWidth, columnWidth + 100
+    ]
     const table = new Table({
       rows: [
         createRow([
@@ -360,7 +364,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         size: columnWidth * gridSize,
         type: WidthType.DXA,
       },
-      columnWidths:  new Array(gridSize).fill(columnWidth),
+      columnWidths: columnWidths,
       borders: {
         top: { size: 1, style: BorderStyle.SINGLE, color: '000000'},
         bottom: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
