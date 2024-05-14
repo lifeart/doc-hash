@@ -1,6 +1,5 @@
 import "glint-environment-gxt";
 import "decorator-transforms/globals";
-import "./style.css";
 
 import { renderComponent, type ComponentReturnType } from "@lifeart/gxt";
 // @ts-ignore unknown module import

@@ -304,7 +304,7 @@ export default class App extends Component {
               </div>
             {{else}}
               <button
-                class='rounded w-full bg-green-600 px-2 py-2 uppercase text font-semibold text-white shadow hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                class='rounded w-full bg-slate-950 px-2 py-2 uppercase text font-semibold text-white shadow hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                 class={{if this.isFormInvalid 'btn-danger' 'btn-success'}}
                 type='button'
                 target='_blank'
