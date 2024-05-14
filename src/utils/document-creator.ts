@@ -46,7 +46,7 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         [53   ,23,12, 12],
       ]
    */
-  
+
   const document = new Document({
     styles: {
       default: {
@@ -74,28 +74,32 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
   });
 
   function createAssuranceTable(data: AssuranceSheetData) {
-    const rows: any[] = [createRow([
-      { label: t.serial_number, size: 10, colSpan: 1 },
-      { label: t.document_designation, size: 20, colSpan: 2 },
-      { label: t.product_name, size: 50, colSpan: 5},
-      { label: t.last_change_number, size: 20, colSpan: 2 },
-    ]), createRow([
-      { label: String(data.doc.serialNumber), size: 10, colSpan: 1 },
-      { label: data.doc.designation, size: 20, colSpan: 2 },
-      { label: data.doc.documentName, size: 50, colSpan: 5},
-      { label: String(data.doc.lastChangeNumber), size: 20, colSpan: 2 },
-    ]), createRow([
-      {
-        label: data.hashFunction,
-        size: 30,
-        colSpan: 3,
-      },
-      {
-        label: data.files.length === 1 ? data.files[0].hash : '',
-        size: 70,
-        colSpan: 7,
-      },
-    ])];
+    const rows: any[] = [
+      createRow([
+        { label: t.serial_number, size: 10, colSpan: 1 },
+        { label: t.document_designation, size: 20, colSpan: 2 },
+        { label: t.product_name, size: 50, colSpan: 5 },
+        { label: t.last_change_number, size: 20, colSpan: 2 },
+      ]),
+      createRow([
+        { label: String(data.doc.serialNumber), size: 10, colSpan: 1 },
+        { label: data.doc.designation, size: 20, colSpan: 2 },
+        { label: data.doc.documentName, size: 50, colSpan: 5 },
+        { label: String(data.doc.lastChangeNumber), size: 20, colSpan: 2 },
+      ]),
+      createRow([
+        {
+          label: data.hashFunction,
+          size: 30,
+          colSpan: 3,
+        },
+        {
+          label: data.files.length === 1 ? data.files[0].hash : '',
+          size: 70,
+          colSpan: 7,
+        },
+      ]),
+    ];
     // [30, 23, 23, 24],
     const fileHeadingRow = [
       {
@@ -157,24 +161,30 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         rowContent[2].size = 20;
         rowContent[2].colSpan = 2;
       }
-      const fileRows = [
-        createRow(rowContent),
-      ];
+      const fileRows = [createRow(rowContent)];
       fileRows.forEach((row) => {
         rows.push(row);
       });
-    })
+    });
     const columnWidth = 910; // 963
     const gridSize = 10;
     const columnWidths = [
-      columnWidth + 200, columnWidth, columnWidth, columnWidth , columnWidth - 200,
-      columnWidth, columnWidth, columnWidth - 100, columnWidth, columnWidth + 100
-    ]
+      columnWidth + 200,
+      columnWidth,
+      columnWidth,
+      columnWidth,
+      columnWidth - 200,
+      columnWidth,
+      columnWidth,
+      columnWidth - 100,
+      columnWidth,
+      columnWidth + 100,
+    ];
     const table = new Table({
       rows: [
         createRow([
-          { label: t.object_name, size: 30, colSpan: 3, bold: true},
-          { label: data.doc.objectName, size: 70, colSpan: 7, bold: true},
+          { label: t.object_name, size: 30, colSpan: 3, bold: true },
+          { label: data.doc.objectName, size: 70, colSpan: 7, bold: true },
         ]),
         ...rows,
         createRow([
@@ -194,14 +204,19 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         createSpacingRow(),
         createRow([
           { rowSpan: 5, label: t.assurance_sheet, size: 50, colSpan: 5 },
-          { rowSpan: 2, label: `${data.doc.designation} ${t.u_l}`, size: 30, colSpan: 3},
+          {
+            rowSpan: 2,
+            label: `${data.doc.designation} ${t.u_l}`,
+            size: 30,
+            colSpan: 3,
+          },
           { rowSpan: 1, label: t.sheet, size: 10, colSpan: 1 },
           { rowSpan: 1, label: t.sheets, size: 10, colSpan: 1 },
         ]),
         createRow([
           { rowSpan: 1, label: '1', size: 10, colSpan: 1 },
           { rowSpan: 1, label: '1', size: 10, colSpan: 1 },
-        ])
+        ]),
       ],
       width: {
         size: columnWidth * gridSize,
@@ -209,11 +224,15 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
       },
       columnWidths: columnWidths,
       borders: {
-        top: { size: 1, style: BorderStyle.SINGLE, color: '000000'},
+        top: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
         bottom: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
         left: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
         right: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
-        insideHorizontal: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
+        insideHorizontal: {
+          size: 1,
+          style: BorderStyle.SINGLE,
+          color: '000000',
+        },
         insideVertical: { size: 1, style: BorderStyle.SINGLE, color: '000000' },
       },
     });
@@ -242,8 +261,8 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
               size: size * 10,
               type: WidthType.PERCENTAGE,
             },
-          })
-        })
+          });
+        }),
       ],
     });
   }
@@ -268,11 +287,13 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
           children: [
             new Paragraph({
               alignment: AlignmentType.CENTER,
-              children: [new TextRun({
-                text: cell.label,
-                bold: cell.bold === true,
-                size: 12*2,
-              })],
+              children: [
+                new TextRun({
+                  text: cell.label,
+                  bold: cell.bold === true,
+                  size: 12 * 2,
+                }),
+              ],
             }),
           ],
           columnSpan: cell.colSpan,
