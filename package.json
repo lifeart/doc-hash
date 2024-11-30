@@ -1,18 +1,27 @@
 {
-  "name": "my-app",
+  "name": "doc-hash",
+  "description": "Document hash generator",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:electron": "electron .",
+    "package:electron:windows": "npx @electron/packager --platform=win32 --asar --arch=x64 --icon=dist/favicon.ico --overwrite --out=build .",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
+  "main": "main.cjs",
   "devDependencies": {
+    "@electron/packager": "^18.3.6",
     "@glint/core": "^1.4.0",
     "@types/qunit": "^2.19.10",
     "autoprefixer": "^10.4.19",
     "docx": "^8.5.0",
+    "electron": "33.2.1",
     "glint-environment-gxt": "^0.0.4",
     "hash-wasm": "^4.11.0",
     "postcss": "^8.4.38",
