@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@lifeart/gxt':
-    specifier: ^0.0.42
-    version: 0.0.42
+    specifier: 0.0.58
+    version: 0.0.58
   decorator-transforms:
     specifier: ^2.0.0
     version: 2.0.0(@babel/core@7.24.5)
@@ -17,8 +17,11 @@ devDependencies:
     specifier: ^18.3.6
     version: 18.3.6
   '@glint/core':
-    specifier: ^1.4.0
-    version: 1.4.0(typescript@5.4.5)
+    specifier: 1.5.0
+    version: 1.5.0(typescript@5.4.5)
+  '@glint/template':
+    specifier: 1.5.0
+    version: 1.5.0
   '@types/qunit':
     specifier: ^2.19.10
     version: 2.19.10
@@ -32,8 +35,8 @@ devDependencies:
     specifier: 33.2.1
     version: 33.2.1
   glint-environment-gxt:
-    specifier: ^0.0.4
-    version: 0.0.4(@glint/core@1.4.0)(@glint/environment-ember-loose@1.4.0)(@glint/template@1.4.0)
+    specifier: ^0.0.5
+    version: 0.0.5(@glint/core@1.5.0)(@glint/environment-ember-loose@1.4.0)(@glint/template@1.5.0)
   hash-wasm:
     specifier: ^4.11.0
     version: 4.11.0
@@ -1794,8 +1797,8 @@ packages:
       '@glimmer/util': 0.87.1
     dev: false
 
-  /@glint/core@1.4.0(typescript@5.4.5):
-    resolution: {integrity: sha512-nq27a/1R6kc3lsuciz8z9IZO1NQCbNkEBxf5KJI7AUrnps6RzQzmq3pmwO24zQYmFcH4sqpod8fleNIpg8YEqg==}
+  /@glint/core@1.5.0(typescript@5.4.5):
+    resolution: {integrity: sha512-oo6ZDwX2S0Qqjai/CJH72LHg1U6rvzH1IyiFlWofaFiu/nSg04CDWZuJNPC3r47jz1+SaSI+mVMUaKJznzxzzQ==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.8.0'
@@ -1814,7 +1817,7 @@ packages:
       - supports-color
     dev: true
 
-  /@glint/environment-ember-loose@1.4.0(@glimmer/component@1.1.2)(@glint/template@1.4.0):
+  /@glint/environment-ember-loose@1.4.0(@glimmer/component@1.1.2)(@glint/template@1.5.0):
     resolution: {integrity: sha512-vFR3qgPTisGzS36e04195wTUrtUc6GuVwm6hsC/XXx6PeRw/6rtMxhK08Aw/VtDc00UqQzM9sIEghPVKHwqVVQ==}
     peerDependencies:
       '@glimmer/component': ^1.1.2
@@ -1843,11 +1846,11 @@ packages:
         optional: true
     dependencies:
       '@glimmer/component': 1.1.2(@babel/core@7.24.5)
-      '@glint/template': 1.4.0
+      '@glint/template': 1.5.0
     dev: true
 
-  /@glint/template@1.4.0:
-    resolution: {integrity: sha512-yD271NhLei/HSQ6utm6hKgoU+B5D5DY+B1irPvgI4KsDEcZI7v/INf5HAMJfzCg92bP1sIxSOuXu5DU6VsY7Mw==}
+  /@glint/template@1.5.0:
+    resolution: {integrity: sha512-KyQUCWifxl8wDxo3SXzJcGKttHbIPgFBtqsoiu13Edx/o4CgGXr5rrM64jJR7Wvunn8sRM+Rq7Y0cHoB068Wuw==}
     dev: true
 
   /@handlebars/parser@2.0.0:
@@ -1890,14 +1893,14 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@lifeart/gxt@0.0.42:
-    resolution: {integrity: sha512-CM/xY6M2uK84LGi8QA8xxKtHzxfBeTKs+8WmJ1RExxlMTGg0odlai8tHBT4cEapDA6DgULm/PfVWlAs027Ix3w==}
+  /@lifeart/gxt@0.0.58:
+    resolution: {integrity: sha512-qgIBO+wGnN+e72QUeJ/yAVq9FvWBm5jFqfVrCvf059tysP2w/u1lq0Q9OJq4r17Yyd2QByxIUa9GcrVn79bE/A==}
     dependencies:
       '@babel/core': 7.24.5
       '@babel/preset-typescript': 7.24.1(@babel/core@7.24.5)
       '@glimmer/syntax': 0.87.1
       content-tag: 2.0.1
-      decorator-transforms: 1.1.0(@babel/core@7.24.5)
+      decorator-transforms: 2.0.0(@babel/core@7.24.5)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2282,11 +2285,6 @@ packages:
       postcss: 8.4.38
       postcss-value-parser: 4.2.0
     dev: true
-
-  /babel-import-util@2.1.1:
-    resolution: {integrity: sha512-3qBQWRjzP9NreSH/YrOEU1Lj5F60+pWSLP0kIdCWxjFHH7pX2YPHIxQ67el4gnMNfYoDxSDGcT0zpVlZ+gVtQA==}
-    engines: {node: '>= 12.*'}
-    dev: false
 
   /babel-import-util@3.0.0:
     resolution: {integrity: sha512-4YNPkuVsxAW5lnSTa6cn4Wk49RX6GAB6vX+M6LqEtN0YePqoFczv1/x0EyLK/o+4E1j9jEuYj5Su7IEPab5JHQ==}
@@ -2775,15 +2773,6 @@ packages:
     dependencies:
       mimic-response: 3.1.0
     dev: true
-
-  /decorator-transforms@1.1.0(@babel/core@7.24.5):
-    resolution: {integrity: sha512-n3WCgc3PB2t9mLV4SJd87IjTbKeFUGw2sU5eEBYczSmcvj3guX4eMW4XOowlQqGk7I/da6+bwv1ydw1ZtNqWaw==}
-    dependencies:
-      '@babel/plugin-syntax-decorators': 7.24.1(@babel/core@7.24.5)
-      babel-import-util: 2.1.1
-    transitivePeerDependencies:
-      - '@babel/core'
-    dev: false
 
   /decorator-transforms@2.0.0(@babel/core@7.24.5):
     resolution: {integrity: sha512-ETfQccGcotK01YJsoB0AGTdUp7kS9jI93mBzrRY5Oyo+bOJfa2UKTSjCNf+iRNwAWBmBKlbiCcyL4tkY4C4dZQ==}
@@ -3406,8 +3395,8 @@ packages:
       pump: 3.0.0
     dev: true
 
-  /glint-environment-gxt@0.0.4(@glint/core@1.4.0)(@glint/environment-ember-loose@1.4.0)(@glint/template@1.4.0):
-    resolution: {integrity: sha512-OrKzWKYXSR1ArIm8aeJP2sd3a5hedrbgDkXgWhwQ8/pdc2n+s/7unECrkVBxYltdGdwl/6cWAQnyhci1t4v44Q==}
+  /glint-environment-gxt@0.0.5(@glint/core@1.5.0)(@glint/environment-ember-loose@1.4.0)(@glint/template@1.5.0):
+    resolution: {integrity: sha512-0SLxU6HXAic5uMkg3Ajve1K7KU0GLMUkpu1XcySya3mRMkqSSOkhirs4RQByGEVbvLaZWAG147iZowneEiwsrA==}
     peerDependencies:
       '@glint/core': ^1.3.0
       '@glint/environment-ember-loose': ^1.3.0
@@ -3426,9 +3415,9 @@ packages:
       '@types/ember__routing':
         optional: true
     dependencies:
-      '@glint/core': 1.4.0(typescript@5.4.5)
-      '@glint/environment-ember-loose': 1.4.0(@glimmer/component@1.1.2)(@glint/template@1.4.0)
-      '@glint/template': 1.4.0
+      '@glint/core': 1.5.0(typescript@5.4.5)
+      '@glint/environment-ember-loose': 1.4.0(@glimmer/component@1.1.2)(@glint/template@1.5.0)
+      '@glint/template': 1.5.0
       content-tag: 2.0.1
     dev: true
 

@@ -1,8 +1,12 @@
 import { Component } from '@lifeart/gxt';
 import { AlgorithmType, algos } from '@/utils/constants';
 
+function includes(items: string[], item: string) {
+  return items.includes(item);
+}
+
 export class Algorithms extends Component<{
-  Args: { selected: AlgorithmType; onSelect: (alg: AlgorithmType) => void };
+  Args: { selected: AlgorithmType[]; onSelect: (alg: AlgorithmType) => void };
   Element: HTMLInputElement;
 }> {
   get items() {
@@ -27,7 +31,7 @@ export class Algorithms extends Component<{
       {{#each this.items as |alg|}}
         <button
           class='relative inline-flex justify-center items-center flex-grow px-3 py-2 text font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-blue-200 focus:z-10'
-          class={{if (eq alg.value @selected) 'bg-blue-100' 'bg-white'}}
+          class={{if (includes @selected alg.value) 'bg-blue-100' 'bg-white'}}
           class={{alg.class}}
           {{on 'click' (fn @onSelect alg.value)}}
         >

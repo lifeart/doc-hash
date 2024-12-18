@@ -1,13 +1,20 @@
 import { Component } from '@lifeart/gxt';
 import { style } from '@/utils/print-style';
-import { type User } from './../utils/constants';
+import { type User, algos, AlgorithmType } from './../utils/constants';
 import { t } from '@/utils/t';
 import { DocumentDTO, FileDTO } from '@/utils/file-manager';
+
+function nameForAlgo(algo: AlgorithmType) {
+  return algos.find((a) => a.value === algo)?.label || '';
+}
+function hashForFile(file: FileDTO, algo: AlgorithmType) {
+  return file.hash[algo] || '';
+}
 
 export class Print extends Component<{
   Args: {
     hidePrintButton?: boolean;
-    selectedAlgo: string;
+    selectedAlgo: AlgorithmType[];
     doc: DocumentDTO;
     files: FileDTO[];
     users: User[];
@@ -16,8 +23,22 @@ export class Print extends Component<{
   get singleFileMode() {
     return this.args.files.length === 1;
   }
-  get firstFileHash() {
-    return this.singleFileMode ? this.args.files[0].hash : '';
+  get firstFile() {
+    return this.args.files[0];
+  }
+  get singleAlgoMode() {
+    return this.args.selectedAlgo.length === 1;
+  }
+  get firstAlgo() {
+    return this.selectedAlgo[0];
+  }
+  get selectedAlgo() {
+    return this.args.selectedAlgo.map((algo) => {
+      return {
+        value: algo,
+        label: nameForAlgo(algo),
+      }
+    });
   }
   <template>
     <style>{{style}}</style>
@@ -61,15 +82,29 @@ export class Print extends Component<{
           <td colspan='3'>{{@doc.documentName}}</td>
           <td class='text-center'>{{@doc.lastChangeNumber}}</td>
         </tr>
-        <tr style='break-inside: avoid; break-after: avoid;'>
-          <td class='text-center font-bold' colspan='2'>
-            {{@selectedAlgo}}
-          </td>
-          <td class='text-center' colspan='5'>
-            {{if this.singleFileMode this.firstFileHash ''}}
-          </td>
-        </tr>
-
+        {{#if this.singleAlgoMode}}
+          <tr style='break-inside: avoid; break-after: avoid;'>
+              <td class='text-center font-bold' colspan='2'>
+                {{this.firstAlgo.label}}
+              </td>
+              <td class='text-center font-bold' colspan='5'>
+                {{#if this.singleFileMode}}
+                  {{hashForFile this.firstFile this.firstAlgo.value}}
+                {{/if}}
+              </td>
+          </tr> 
+        {{else if this.singleFileMode}}
+          {{#each this.selectedAlgo key="value" sync=true as |algo|}}
+            <tr style='break-inside: avoid; break-after: avoid;'>
+              <td class='text-center font-bold' colspan='2'>
+                {{algo.label}}
+              </td>
+              <td class='text-center font-bold' colspan='5'>
+                {{hashForFile this.firstFile algo.value}}
+              </td>
+            </tr> 
+          {{/each}}
+        {{/if}}
         <tr style='break-inside: avoid; break-after: avoid;'>
           <td class='text-center font-bold' colspan='2'>
             {{t.file_name}}
@@ -100,11 +135,16 @@ export class Print extends Component<{
             </td>
             {{#if (not this.singleFileMode)}}
               <td class='text-center' colspan='2'>
-                {{model.hash}}
+                {{#if this.singleAlgoMode}}
+                  {{hashForFile model this.firstAlgo.value}}
+                {{else}}
+                  {{#each this.selectedAlgo key="value" sync=true as |algo|}}
+                    {{algo.label}}: {{hashForFile model algo.value}}<br>
+                  {{/each}}
+                {{/if}}
               </td>
             {{/if}}
           </tr>
-
         {{/each}}
         <tr style='break-inside: avoid; break-after: auto;'>
           <td colspan='7' style='padding: 2px'>

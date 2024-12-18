@@ -29,11 +29,7 @@ import { delay } from './utils/timers';
 export default class App extends Component {
   epoch = 0;
   @tracked doc = new DocumentDTO();
-  @tracked selectedAlgo = read('algo', algos[0].value) as AlgorithmType;
-  get selectedAlgoName() {
-    const active = this.selectedAlgo;
-    return algos.find((algo) => active === algo.value)!.label;
-  }
+  @tracked selectedAlgo = [read('algo', algos[0].value) as AlgorithmType];
   @tracked
   users: User[] = JSON.parse(
     read(
@@ -56,9 +52,17 @@ export default class App extends Component {
   };
   selectAlgo = (name: AlgorithmType) => {
     this.epoch++;
-    this.selectedAlgo = name;
-    for (let model of this.models) {
-      model.hash = '';
+    const algos = this.selectedAlgo;
+    if (this.allowMultiHashMode) {
+      this.selectedAlgo = algos.includes(name)
+        ? algos.filter((algo) => algo !== name)
+        : [...algos, name];
+    } else {
+      this.selectedAlgo = [name];
+    }
+
+    if (this.selectedAlgo.length === 0) {
+      this.selectedAlgo = [algos[0]];
     }
     write('algo', name);
   };
@@ -80,9 +84,8 @@ export default class App extends Component {
     const hasAlgo = this.selectedAlgo;
     const isInvalid =
       this.models.filter((model) => {
-        const isInvalid = model.isInvalid;
-        const hasInvalidAlgo = model.algo !== hasAlgo;
-        return hasInvalidAlgo || isInvalid;
+        const hasInvalidAlgo = hasAlgo.some((algo) => !model.hash[algo]);
+        return hasInvalidAlgo;
       }).length > 0;
     if (!hasDocuments) {
       console.log('No documents');
@@ -110,7 +113,7 @@ export default class App extends Component {
     win.document.title = t.iul;
     renderComponent(
       new Print({
-        selectedAlgo: this.selectedAlgoName,
+        selectedAlgo: this.selectedAlgo,
         files: this.models,
         doc: this.doc,
         users: this.users,
@@ -127,7 +130,7 @@ export default class App extends Component {
   };
   generateDocument = (epoch: number) => {
     createAssuranceSheet({
-      hashFunction: this.selectedAlgoName,
+      hashFunction: this.selectedAlgo,
       users: this.users,
       files: this.models,
       doc: this.doc,
@@ -158,50 +161,52 @@ export default class App extends Component {
       });
     };
   };
-  async calcFileHashes(models: FileDTO[], algo: AlgorithmType, epoch: number) {
+  async calcFileHashes(models: FileDTO[], algos: AlgorithmType[], epoch: number) {
     while (this.progress) {
       await delay(100);
     }
     if (this.epoch !== epoch) {
       return;
     }
-    const modelsToProcess = models.filter(
-      (model) => model.file && (!model.hash || model.algo !== algo),
-    );
-    let chunksToProcess = modelsToProcess.reduce((acc, model) => {
-      return acc + (Math.floor(model.file!.size / CHUNK_SIZE) || 1);
-    }, 0);
-    let processedChunks = 0;
-    for (let model of modelsToProcess) {
-      if (this.epoch !== epoch) {
-        return;
-      }
-      const file = model.file!;
-      const chunksForFile = Math.floor(file.size / CHUNK_SIZE) || 1;
-      const progress = new Progress(
-        () => this.epoch === epoch,
-        chunksToProcess,
-        processedChunks,
+    for (let algo of algos) {
+      const modelsToProcess = models.filter(
+        (model) => model.file && !model.hash[algo],
       );
-
-      try {
-        this.progress = progress;
-        const hash = await getHash(file, algo, progress);
-        model.hash = hash;
-        model.algo = algo;
-        console.log('Hash', hash);
-      } catch (e) {
-        throw e;
-      } finally {
-        processedChunks += chunksForFile;
-        if (this.progress === progress) {
-          this.progress = null;
-        }
-        if (!progress.isActual()) {
+      let chunksToProcess = modelsToProcess.reduce((acc, model) => {
+        return acc + (Math.floor(model.file!.size / CHUNK_SIZE) || 1);
+      }, 0);
+      let processedChunks = 0;
+      for (let model of modelsToProcess) {
+        if (this.epoch !== epoch) {
           return;
+        }
+        const file = model.file!;
+        const chunksForFile = Math.floor(file.size / CHUNK_SIZE) || 1;
+        const progress = new Progress(
+          () => this.epoch === epoch,
+          chunksToProcess,
+          processedChunks,
+        );
+
+        try {
+          this.progress = progress;
+          const hash = await getHash(file, algo, progress);
+          model.hash[algo] = hash;
+          model.hash = { ...model.hash };
+        } catch (e) {
+          throw e;
+        } finally {
+          processedChunks += chunksForFile;
+          if (this.progress === progress) {
+            this.progress = null;
+          }
+          if (!progress.isActual()) {
+            return;
+          }
         }
       }
     }
+    
     this.progress = null;
   }
   @tracked progress: null | Progress = null;
@@ -227,8 +232,29 @@ export default class App extends Component {
   get progressWidth() {
     return `${this.progress?.percents ?? 100}%`;
   }
+  allowMultiHashMode = false
+  addDocumentEventHandler = (_: HTMLDivElement) => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const isShiftKey = e.shiftKey;
+      if (isShiftKey) {
+        this.allowMultiHashMode = true;
+      }
+    }
+    const onKeyUp = (e: KeyboardEvent) => {
+      const isShiftKey = e.key === 'Shift';
+      if (isShiftKey) {
+        this.allowMultiHashMode = false;
+      }
+    }
+    document.addEventListener('keyup', onKeyUp);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keyup', onKeyUp);
+      document.removeEventListener('keydown', onKeyDown);
+    }
+  }
   <template>
-    <div class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8' {{this.cleanup}}>
+    <div {{this.addDocumentEventHandler}} class='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8' {{this.cleanup}}>
       <div class='mx-auto max-w-3xl'>
         <div class='pb-5'>
           <div class='py-3'>
@@ -282,7 +308,7 @@ export default class App extends Component {
                 @files={{this.models}}
                 @users={{this.users}}
                 @doc={{this.doc}}
-                @selectedAlgo={{this.selectedAlgoName}}
+                @selectedAlgo={{this.selectedAlgo}}
                 @hidePrintButton={{true}}
               />
             </div>
