@@ -1,3 +1,4 @@
+import { algos } from './constants';
 import { AssuranceSheetData } from './document-creator';
 import { t } from './t';
 
@@ -15,7 +16,7 @@ export async function patchFile(data: AssuranceSheetData) {
       patches: {
         hash_function_key: {
           type: PatchType.PARAGRAPH,
-          children: [new TextRun(data.hashFunction)],
+          children: [new TextRun(data.hashFunction.map((alg) => algos.find(a => a.value === alg)?.label).join(', '))],
         },
         last_modified_key: {
           type: PatchType.PARAGRAPH,
