@@ -1,5 +1,6 @@
 import { tracked } from '@lifeart/gxt';
 import { read, remove } from './persisted';
+import { AlgorithmType } from './constants';
 
 const fileSet: Set<FileDTO> = new Set();
 
@@ -59,7 +60,11 @@ export class FileDTO {
   @tracked
   file: null | File = null;
   @tracked
-  hash: string = '';
+  hash = {
+    [AlgorithmType.MD5]: '',
+    [AlgorithmType.SHA1]: '',
+    [AlgorithmType.CRC32]: '',
+  }
   @tracked fileSize: number = 0;
   @tracked fileName: string = '';
   @tracked lastModified: number = 0;
@@ -79,12 +84,6 @@ export class FileDTO {
         })
       : '';
   }
-  get isInvalid() {
-    return (
-      !this.hash
-    );
-  }
-  @tracked algo: string = '';
   constructor(file: File) {
     const key = keyForFile(file);
     this.key = key;

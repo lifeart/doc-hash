@@ -1,9 +1,9 @@
-import { type User } from './constants';
+import { type User, AlgorithmType, algos } from './constants';
 import { type DocumentDTO, type FileDTO } from './file-manager';
 import { t } from './t';
 
 export type AssuranceSheetData = {
-  hashFunction: string;
+  hashFunction: AlgorithmType[];
   users: User[];
   doc: DocumentDTO;
   files: FileDTO[];
@@ -81,6 +81,9 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
   });
 
   function createAssuranceTable(data: AssuranceSheetData) {
+    const isSingleHashFunction = data.hashFunction.length === 1;
+    const firstHashName = data.hashFunction[0];
+    const isSingleFileMode = data.files.length === 1;
     const rows: any[] = [
       createRow([
         { label: t.serial_number, size: 10, colSpan: 1 },
@@ -94,19 +97,35 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         { label: data.doc.documentName, size: 50, colSpan: 5 },
         { label: String(data.doc.lastChangeNumber), size: 20, colSpan: 2 },
       ]),
-      createRow([
+      isSingleHashFunction ? createRow([
         {
-          label: data.hashFunction,
+          label: algos.find((a) => a.value === firstHashName)?.label ?? '',
           size: 30,
           colSpan: 3,
         },
         {
-          label: data.files.length === 1 ? data.files[0].hash : '',
+          label: data.files.length === 1 ? data.files[0].hash[firstHashName] : '',
           size: 70,
           colSpan: 7,
         },
-      ]),
-    ];
+      ]) : null,
+    ].filter((el) => el !== null);
+    if (isSingleFileMode && !isSingleHashFunction) {
+      data.hashFunction.forEach((hash) => {
+        rows.push(createRow([
+          {
+            label: algos.find((a) => a.value === hash)?.label ?? '',
+            size: 30,
+            colSpan: 3,
+          },
+          {
+            label: data.files.length === 1 ? data.files[0].hash[hash] : '',
+            size: 70,
+            colSpan: 7,
+          },
+        ]))
+      });
+    }
     // [30, 23, 23, 24],
     const fileHeadingRow = [
       {
@@ -158,8 +177,17 @@ export async function createAssuranceSheet(data: AssuranceSheetData) {
         },
       ];
       if (data.files.length > 1) {
+        const hashLabel: string[] = [];
+        data.hashFunction.forEach((hash) => {
+          const hashName = algos.find((a) => a.value === hash)?.label ?? '';
+          if (isSingleHashFunction) {
+            hashLabel.push(model.hash[hash]);
+          } else {
+            hashLabel.push(`${hashName}: ${model.hash[hash]}`);
+          }
+        });
         rowContent.push({
-          label: model.hash,
+          label: hashLabel.join('\n').trim(),
           colSpan: 3,
           size: 30,
         });
